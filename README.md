@@ -69,17 +69,18 @@ Download the [NixOS graphical installer](https://nixos.org/download), flash it, 
 ```bash
 sudo nixos-rebuild switch --impure --flake github:1-bit-wonder/noctix-os#desktop --accept-flake-config
 ```
-- `--impure` — the config imports `/etc/nixos/hardware-configuration.nix` directly from the machine.
+- `--impure` — the config probes `/etc/nixos/hardware-configuration.nix` on the machine and uses it when present (falling back to a committed placeholder otherwise).
 - `--accept-flake-config` — trusts the Noctalia and Hyprland binary caches; without it, everything rebuilds from source.
 
 Default password is `nixos` — change it with `passwd ni` after logging in.
 
 ### 3. Lock in your hardware config for future reinstalls
+The flake auto-detects hardware config, so the install above already uses your machine's real disks — no editing required. To make reinstalls self-contained (and to drop `--impure` entirely), commit your generated config into the repo:
 ```bash
 git clone https://github.com/1-bit-wonder/noctix-os ~/noctix-os
 cp /etc/nixos/hardware-configuration.nix ~/noctix-os/hosts/desktop/hardware-configuration.nix
 ```
-Then change the import in `hosts/desktop/configuration.nix` from `/etc/nixos/hardware-configuration.nix` to `./hardware-configuration.nix`, commit, and push. After this you no longer need `--impure`.
+Then *optionally* replace the `if builtins.pathExists … else …` block in `hosts/desktop/configuration.nix` with a plain `./hardware-configuration.nix` import, commit, and push. After that you no longer need `--impure`.
 
 ### 4. Post-install setup
 A few things are intentionally **not** baked into this public repo and need a one-time setup:
@@ -166,7 +167,7 @@ To add a *different* machine from scratch:
 
 ## VM & ISO testing
 
-> VM and ISO builds require `--impure` until you commit the hardware config and switch to the relative import path.
+> VM and ISO builds need `--impure` (the config probes the absolute hardware-config path). They build fine off-host — the import falls back to the committed placeholder — so no path editing is required.
 
 ```bash
 # QEMU VM:

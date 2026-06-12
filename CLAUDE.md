@@ -9,15 +9,13 @@ NixOS flake for a Hyprland + Noctalia-shell desktop, tracking `nixos-unstable`.
 Both hosts share everything in `modules/` and `home/`; only `hosts/<name>/` differs.
 
 ## Validate changes
-Host configs import `/etc/nixos/hardware-configuration.nix` (absolute path, for first boot), so evaluation needs `--impure` and that file present on the machine. Run `nix flake show` plus a toplevel eval for each host you touched:
+Host configs pick their hardware config with `if builtins.pathExists /etc/nixos/hardware-configuration.nix then <that> else ./hardware-configuration.nix`, so evaluation always needs `--impure` (to probe the absolute path) but the file need NOT be present — off-host it falls back to the committed placeholder. No import swapping. Run `nix flake show` plus a toplevel eval for each host you touched:
 
 ```bash
 nix flake show --impure --accept-flake-config
 nix eval --impure --accept-flake-config .#nixosConfigurations.desktop.config.system.build.toplevel.drvPath
 nix eval --impure --accept-flake-config .#nixosConfigurations.laptop.config.system.build.toplevel.drvPath
 ```
-
-If `/etc/nixos/hardware-configuration.nix` is missing (e.g. validating off-host), temporarily switch the host's import to `./hardware-configuration.nix`, eval, then revert.
 
 ## Conventions
 - System config → `modules/` (`system.nix`, `desktop.nix`, `packages.nix`). User/home config → `home/`. Don't mix the two.
