@@ -6,15 +6,9 @@
   programs.starship.enable = true;
   xdg.configFile."starship.toml".source = ./starship.toml;
 
-  # Per-directory environments + cached `nix develop` shells
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
-
-  # Polyglot runtime/version manager (Node, Python, Go, …). Successor to asdf/rtx.
-  # Install a runtime with e.g. `mise use -g node@lts`. Chosen over fnm because it
-  # is not Node-only and pairs cleanly with direnv.
+  # Polyglot runtime/version manager (Node, Python, Go, …). Successor to asdf/rtx;
+  # manages its own per-project tools + env via mise.toml.
+  # Install a runtime with e.g. `mise use -g node@lts`.
   programs.mise.enable = true;
 
   # Fuzzy finder, smarter `cd`, nicer `cat`

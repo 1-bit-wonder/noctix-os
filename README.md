@@ -47,8 +47,7 @@ Both hosts share everything in `modules/` and `home/`; only `hosts/<name>/` diff
 - **System:** pavucontrol, btop, baobab, GNOME system monitor, nm-connection-editor, **1Password** (GUI + polkit integration)
 
 ### Dev toolchain (`home/dev.nix`)
-- **[mise](https://mise.jdx.dev/)** — polyglot runtime/version manager (Node, Python, Go, …)
-- **direnv** + **nix-direnv** — per-directory envs with cached dev shells
+- **[mise](https://mise.jdx.dev/)** — polyglot runtime/version manager (Node, Python, Go, …) with per-project tools + env
 - **[starship](https://starship.rs/)** prompt · **fzf** · **zoxide** · **bat**
 - **ripgrep**, **fd**, **jq**, **eza**, **tree**, **lazygit**
 - **gh** (GitHub CLI), **git-delta** (syntax-highlighted diffs)
@@ -209,7 +208,7 @@ home/
   noctalia.nix                    Noctalia shell settings + wallpapers
   apps.nix                        GTK/Qt theming, Kitty, Firefox
   services.nix                    user services (hypridle)
-  dev.nix                         dev toolchain — mise, direnv, starship, git signing, CLI tools
+  dev.nix                         dev toolchain — mise, starship, git signing, CLI tools
 
 assets/                           wallpaper images, logo
 ```
