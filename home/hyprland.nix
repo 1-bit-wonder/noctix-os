@@ -156,8 +156,14 @@ in {
       hl.bind(mod .. " + E",         hl.dsp.exec_cmd("nautilus"))
       hl.bind(mod .. " + Delete",    hl.dsp.exec_cmd("noctalia msg session lock"))
       hl.bind(mod .. " + F1",        hl.dsp.exec_cmd("foot --title Cheatsheet --override font_size=13 -e less /etc/keybinds.md"))
-      hl.bind(mod .. " + N",         hl.dsp.exec_cmd("networkmanager_dmenu"))
       hl.bind(mod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"))
+
+      -- Noctalia control-center panels (network/bluetooth are tabs of the control
+      -- center; panel-toggle accepts a tab key to open it directly on that tab)
+      hl.bind(mod .. " + N", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center network"))
+      hl.bind(mod .. " + B", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center bluetooth"))
+      hl.bind(mod .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"))
+      hl.bind(mod .. " + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 
       -- Layout switching (hyprctl keyword updates general.layout at runtime)
       hl.bind(mod .. " + ALT + D", hl.dsp.exec_cmd("hyprctl keyword general:layout dwindle"))

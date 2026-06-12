@@ -36,8 +36,8 @@
 
     # System utilities
     pavucontrol           # audio control
-    networkmanager_dmenu  # fuzzel-based WiFi picker (Super+N)
     networkmanagerapplet  # nm-connection-editor for VPNs / advanced config
+                          # (WiFi picker is now the Noctalia control center — Super+N)
     btop                  # resource monitor
     baobab                # disk usage analyzer
     gnome-system-monitor
@@ -84,9 +84,14 @@
       Super + Return          Terminal (kitty)
       Super + E               Files (Nautilus)
       Super + R               App launcher (Noctalia)
-      Super + N               WiFi picker (networkmanager_dmenu + fuzzel)
       Super + Shift + V       Clipboard history picker (cliphist + fuzzel)
       Super + F1              This cheatsheet
+
+    NOCTALIA PANELS
+      Super + N               Network panel (control center)
+      Super + B               Bluetooth panel (control center)
+      Super + A               Quick settings (control center)
+      Super + X               Power / session menu
 
     WINDOWS
       Super + Q               Close window

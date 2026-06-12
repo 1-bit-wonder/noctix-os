@@ -5,6 +5,7 @@
     ./noctalia.nix
     ./apps.nix
     ./services.nix
+    ./dev.nix
   ];
 
   home.username = "ni";

@@ -44,6 +44,11 @@
   security.rtkit.enable = true;
   security.polkit.enable = true;
 
+  # YubiKey / FIDO2 baseline — udev rules so the key is accessible without root,
+  # for FIDO2 SSH keys (sk-ecdsa) and SSH commit signing. No PAM changes here;
+  # touch-to-sudo / GPG smartcard were intentionally left out.
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+
   # Shells
   programs.fish.enable = true;
 
@@ -51,5 +56,6 @@
   environment.systemPackages = with pkgs; [
     wget curl git vim htop unzip zip
     pciutils usbutils lshw
+    libfido2              # fido2-token etc. — manage the YubiKey FIDO2 SSH key
   ];
 }

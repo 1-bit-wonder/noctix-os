@@ -1,0 +1,33 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="noctix-os logo">
+  <defs>
+    <!-- mauve -> blue, 45deg: matches the Hyprland active border gradient -->
+    <linearGradient id="grad" x1="0" y1="0" x2="256" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#cba6f7"/>
+      <stop offset="1" stop-color="#89b4fa"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="128" y1="0" x2="128" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1e1e2e"/>
+      <stop offset="1" stop-color="#181825"/>
+    </linearGradient>
+    <!-- carve a crescent: outer disc minus an offset disc -->
+    <mask id="moon">
+      <circle cx="116" cy="130" r="62" fill="#fff"/>
+      <circle cx="142" cy="112" r="54" fill="#000"/>
+    </mask>
+  </defs>
+
+  <!-- icon plate + gradient border (superellipse-ish rounded square) -->
+  <rect x="6" y="6" width="244" height="244" rx="60" fill="url(#bg)"/>
+  <rect x="7.5" y="7.5" width="241" height="241" rx="58.5" fill="none" stroke="url(#grad)" stroke-width="3"/>
+
+  <!-- crescent moon -->
+  <circle cx="116" cy="130" r="62" fill="url(#grad)" mask="url(#moon)"/>
+
+  <!-- stars -->
+  <g fill="#cdd6f4">
+    <path d="M186 74 l4 11 11 4 -11 4 -4 11 -4 -11 -11 -4 11 -4 z"/>
+    <circle cx="176" cy="150" r="3.2"/>
+    <circle cx="158" cy="64" r="2.4" fill="#cba6f7"/>
+    <circle cx="198" cy="120" r="2.6" fill="#89b4fa"/>
+  </g>
+</svg>
