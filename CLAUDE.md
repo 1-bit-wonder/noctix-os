@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-NixOS flake for a Hyprland + Noctalia-shell desktop, tracking `nixos-unstable`.
+NixOS flake for a Hyprland + Noctalia v5 desktop, tracking `nixos-unstable`.
 
 ## Hosts
 - `desktop` — the live machine (AMD Ryzen 7 7700X + RTX 2080). The real host.

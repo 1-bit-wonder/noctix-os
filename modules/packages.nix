@@ -65,7 +65,7 @@
     awww                  # animated wallpaper daemon (formerly swww)
 
     # Note: no separate notification daemon needed — Noctalia registers its own
-    # D-Bus notification service via NotificationService.qml
+    # D-Bus notification service.
 
     # Themes & icons
     adw-gtk3              # Adwaita-style theme for GTK3 apps

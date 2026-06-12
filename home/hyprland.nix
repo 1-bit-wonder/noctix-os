@@ -16,7 +16,7 @@ in {
       -- ── Autostart ────────────────────────────────────────────────────────────
       hl.on("hyprland.start", function()
         hl.exec_cmd("${polkitAgent}")
-        -- nm-applet omitted: networkmanager_dmenu (Super+N) handles WiFi, no tray icon needed
+        -- nm-applet omitted: Noctalia's control center handles WiFi (Super+N), no tray icon needed
         hl.exec_cmd("blueman-applet")
         hl.exec_cmd("hypridle")
         -- clipboard history (stores text + images via wl-paste → cliphist)

@@ -1,7 +1,8 @@
 {
   description = "NixOS + Noctalia on Hyprland — work-ready desktop";
 
-  # Noctalia requires nixos-unstable; binary caches avoid rebuilding Quickshell
+  # Tracks nixos-unstable. These caches serve prebuilt Noctalia (C++/Qt) and
+  # Hyprland binaries — without them both compile from source on every rebuild.
   nixConfig = {
     extra-substituters = [
       "https://noctalia.cachix.org"
