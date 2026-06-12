@@ -1,0 +1,70 @@
+format = """
+[\ue0b6](#cba6f7)\
+$username\
+$hostname\
+[\ue0b4 ](#cba6f7)\
+[\ue0b6](#89b4fa)\
+$directory\
+[\ue0b4 ](#89b4fa)\
+[\ue0b6](#f38ba8)\
+$memory_usage\
+[\ue0b4 ](#f38ba8)\
+$git_branch\
+$git_status\
+$nodejs $rust $php
+
+
+[$time $shell🌙  ](bold yellow)\
+"""
+
+# Disable the blank line at the start of the prompt
+add_newline = true
+
+# You can also replace your username with a neat symbol like  to save some space
+[username]
+style_user = "bg:#cba6f7 fg:#ffffff" 
+show_always = true
+format = '[$user@]($style)'
+
+[hostname]
+style = "bg:#cba6f7 fg:#ffffff"
+ssh_only = false
+disabled = false
+format = '[$hostname]($style)'
+
+[directory]
+format = "[$path]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+style = "bg:#89b4fa fg:#ffffff"
+
+[memory_usage]
+disabled = false
+threshold = -1
+symbol = " "
+style = "bg:#f38ba8 fg:#ffffff"
+format = "[RAM:${ram}]($style)"
+
+[git_branch]
+symbol = ""
+style = "bg:#fab387 fg:#ffffff"
+format = "[\ue0b6](#fab387)[$symbol $branch ]($style)"
+
+[git_status]
+style = "bg:#fab387 fg:#ffffff"
+format = "[$all_status$ahead_behind]($style)[\ue0b4 ](#fab387)"
+
+[nodejs]
+format = "[\ue0b6](#a6e3a1)[$symbol@$version](bg:#a6e3a1)[\ue0b4 ](#a6e3a1)"
+
+[rust]
+format = "[\ue0b6](#a6e3a1)[$symbol@$version](bg:#a6e3a1)[\ue0b4 ](#a6e3a1)"
+
+[time]
+style = "bold yellow"
+disabled = false
+format = "$time"
+time_format = "%r" # Hour:Minute Format
+
+[shell]
+disabled = false

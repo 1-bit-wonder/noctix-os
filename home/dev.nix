@@ -1,6 +1,10 @@
 { pkgs, ... }: {
-  # Shell prompt — fish integration is enabled automatically by home-manager
+  # Shell prompt — fish integration is enabled automatically by home-manager.
+  # Theme is the user's own (powerline segments, Catppuccin palette), kept as a
+  # verbatim file so the Nerd Font glyphs survive intact. enable=true with no
+  # `settings` means the module doesn't write starship.toml, so no collision.
   programs.starship.enable = true;
+  xdg.configFile."starship.toml".source = ./starship.toml;
 
   # Per-directory environments + cached `nix develop` shells
   programs.direnv = {
