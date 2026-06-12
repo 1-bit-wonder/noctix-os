@@ -1,0 +1,20 @@
+# Nix build outputs
+result
+result-*
+
+# VM disk images
+*.qcow2
+*.img
+*.vmdk
+*.vdi
+
+# Editor directories
+.helix/
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Nix eval cache (local, not needed in repo)
+.direnv/
