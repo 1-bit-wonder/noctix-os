@@ -1,4 +1,19 @@
 { config, pkgs, ... }: {
+  # Fish — interactive shell, managed by home-manager. (modules/system.nix also sets
+  # programs.fish.enable, which registers fish as a valid login shell system-wide;
+  # both are required and live at different layers.)
+  programs.fish.enable = true;
+
+  # Starship prompt — config (custom theme) lives in home/dev.nix via xdg.configFile.
+  programs.starship = {
+    enable = true;
+  };
+
+  # Helix — modal editor
+  programs.helix = {
+    enable = true;
+  };
+
   # Firefox — managed by home-manager so extensions / policies can be added later
   programs.firefox = {
     enable = true;
