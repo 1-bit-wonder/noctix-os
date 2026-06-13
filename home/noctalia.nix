@@ -23,6 +23,13 @@ in {
       theme = {
         mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
         source = "wallpaper";
+        # Enable the built-in Kitty template so Noctalia regenerates
+        # ~/.config/kitty/themes/noctalia.conf (globincluded by kitty.conf) on every
+        # palette change and live-reloads running terminals to match light/dark.
+        templates = {
+          enable_builtin_templates = true;
+          builtin_ids              = [ "kitty" ];
+        };
       };
       wallpaper = {
         enabled             = true;
