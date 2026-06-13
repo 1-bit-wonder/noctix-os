@@ -81,8 +81,8 @@
           boot.initrd.kernelModules = [ "usbhid" "hid_generic" "atkbd" "i8042" ];
 
           # iso-image.nix overrides fileSystems."/" but not "/boot" or swapDevices.
-          # Our hardware-configuration.nix placeholder has mkDefault values for both
-          # that point to real disk labels which don't exist on live media — override them.
+          # The committed hardware-configuration.nix defines both with real disk UUIDs
+          # that don't exist on live media — mkForce them for the ISO.
           fileSystems."/boot" = lib.mkForce { fsType = "tmpfs"; device = "tmpfs"; options = [ "mode=0755" ]; };
           swapDevices         = lib.mkForce [];
         })

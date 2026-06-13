@@ -7,16 +7,10 @@
   nixpkgs.config.allowUnfree = true;
 
   imports = [
-    # Use the machine's installer-generated hardware config when it exists (first boot
-    # and the live machine); otherwise fall back to the committed placeholder so the
-    # flake still evaluates and ISO/VM builds work off-host. No more swapping paths by
-    # hand — just keep --impure (needed to probe the absolute path). Once you've
-    # installed and copied your real hardware-configuration.nix into this directory,
-    # you can replace this whole expression with `./hardware-configuration.nix` and
-    # drop --impure for good.
-    (if builtins.pathExists /etc/nixos/hardware-configuration.nix
-     then /etc/nixos/hardware-configuration.nix
-     else ./hardware-configuration.nix)
+    # Committed placeholder hardware config — this host is a stub with no real
+    # hardware yet. On first install, replace it with the machine's generated config
+    # (cp /etc/nixos/hardware-configuration.nix here). Pure relative import — no --impure.
+    ./hardware-configuration.nix
     ../../modules/system.nix
     ../../modules/desktop.nix
     ../../modules/packages.nix

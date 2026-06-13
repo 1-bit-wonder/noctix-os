@@ -62,26 +62,24 @@ Both hosts share everything in `modules/` and `home/`; only `hosts/<name>/` diff
 ## Install on a new machine
 
 ### 1. Install NixOS
-Download the [NixOS graphical installer](https://nixos.org/download), flash it, and run through it. Use `desktop` as the hostname and `ni` as the username to match this config. The installer writes hardware config to `/etc/nixos/hardware-configuration.nix` — that's all you need from it.
+Download the [NixOS graphical installer](https://nixos.org/download), flash it, and run through it. Use `desktop` as the hostname and `ni` as the username to match this config. The installer writes hardware config to `/etc/nixos/hardware-configuration.nix`.
 
 ### 2. Apply this config on first boot
 ```bash
-sudo nixos-rebuild switch --impure --flake github:1-bit-wonder/noctix-os#desktop --accept-flake-config
+sudo nixos-rebuild switch --flake github:1-bit-wonder/noctix-os#desktop --accept-flake-config
 ```
-- `--impure` — the config probes `/etc/nixos/hardware-configuration.nix` on the machine and uses it when present (falling back to a committed placeholder otherwise).
 - `--accept-flake-config` — trusts the Noctalia and Hyprland binary caches; without it, everything rebuilds from source.
 
 Default password is `nixos` — change it with `passwd ni` after logging in.
 
-### 3. Lock in your hardware config for future reinstalls
-The flake auto-detects hardware config, so the install above already uses your machine's real disks — no editing required. To make reinstalls self-contained (and to drop `--impure` entirely), commit your generated config into the repo:
-```bash
-git clone https://github.com/1-bit-wonder/noctix-os ~/noctix-os
-cp /etc/nixos/hardware-configuration.nix ~/noctix-os/hosts/desktop/hardware-configuration.nix
-```
-Then *optionally* replace the `if builtins.pathExists … else …` block in `hosts/desktop/configuration.nix` with a plain `./hardware-configuration.nix` import, commit, and push. After that you no longer need `--impure`.
+> **Reinstalling on different hardware?** The desktop's real `hardware-configuration.nix` is committed to this repo (`hosts/desktop/`). On a new machine, regenerate it and overwrite the committed copy before deploying:
+> ```bash
+> git clone https://github.com/1-bit-wonder/noctix-os ~/noctix-os
+> cp /etc/nixos/hardware-configuration.nix ~/noctix-os/hosts/desktop/hardware-configuration.nix
+> # then: sudo nixos-rebuild switch --flake ~/noctix-os#desktop --accept-flake-config
+> ```
 
-### 4. Post-install setup
+### 3. Post-install setup
 A few things are intentionally **not** baked into this public repo and need a one-time setup:
 
 **Git identity** (kept out of the repo on purpose):
@@ -112,7 +110,7 @@ git pull && sudo nixos-rebuild switch --flake ~/noctix-os#desktop
 ```
 
 ## Adding a second machine
-`hosts/laptop/` already exists as a **stub** for future hardware — it evaluates but hasn't been deployed. When the real machine exists, lock in its hardware config the same way as the desktop (step 3) and install with `--flake github:1-bit-wonder/noctix-os#laptop`.
+`hosts/laptop/` already exists as a **stub** for future hardware — it evaluates but hasn't been deployed. When the real machine exists, copy its generated `hardware-configuration.nix` into `hosts/laptop/` (replacing the placeholder) and install with `--flake github:1-bit-wonder/noctix-os#laptop`.
 
 To add a *different* machine from scratch:
 1. Add a directory under `hosts/` (e.g. `hosts/my-box/`)
@@ -166,23 +164,23 @@ To add a *different* machine from scratch:
 
 ## VM & ISO testing
 
-> VM and ISO builds need `--impure` (the config probes the absolute hardware-config path). They build fine off-host — the import falls back to the committed placeholder — so no path editing is required.
+> VM and ISO builds work off-host with no extra flags — the hardware config is committed and the ISO module overrides the filesystems for live media.
 
 ```bash
 # QEMU VM:
-nix build .#vm --impure --accept-flake-config
+nix build .#vm --accept-flake-config
 QEMU_OPTS="-m 4096 -smp 4" ./result/bin/run-desktop-vm   # login: ni / nixos
 
 # Bootable live ISO:
-nix build .#iso --impure --accept-flake-config
+nix build .#iso --accept-flake-config
 sudo dd if=result/iso/noctix-os.iso of=/dev/sdX bs=4M status=progress oflag=sync
 ```
 
 ## Validate changes
 ```bash
-nix flake show --impure --accept-flake-config
-nix eval --impure --accept-flake-config .#nixosConfigurations.desktop.config.system.build.toplevel.drvPath
-nix eval --impure --accept-flake-config .#nixosConfigurations.laptop.config.system.build.toplevel.drvPath
+nix flake show --accept-flake-config
+nix eval --accept-flake-config .#nixosConfigurations.desktop.config.system.build.toplevel.drvPath
+nix eval --accept-flake-config .#nixosConfigurations.laptop.config.system.build.toplevel.drvPath
 ```
 
 ## Structure
@@ -192,7 +190,7 @@ flake.lock
 
 hosts/desktop/                    Ryzen 7 7700X + RTX 2080 — the live host
   configuration.nix               hostname, user, home-manager wiring
-  hardware-configuration.nix      PLACEHOLDER — replace with your machine's generated config
+  hardware-configuration.nix      real generated config for the live machine (committed)
 hosts/laptop/                     STUB for future hardware — evaluates, not yet deployed
   configuration.nix
   hardware-configuration.nix      PLACEHOLDER
