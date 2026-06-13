@@ -1,5 +1,5 @@
 { lib, pkgs, ... }: let
-  wallpaper = ../assets/light/lone_tree_day.webp;
+  wallpaper = ../assets/lone_tree_day.webp;
 in {
   # GPU drivers — required for Hyprland to start on real hardware.
   # programs.hyprland does NOT enable this automatically.
