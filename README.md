@@ -88,10 +88,16 @@ git config --global user.name  "Your Name"
 git config --global user.email "you@example.com"
 ```
 
-**YubiKey commit signing** — git is preconfigured to sign with your FIDO2 SSH key (`~/.ssh/id_ecdsa_sk_rk.pub`). Register that key on GitHub as a **Signing key** (Settings → SSH and GPG keys → New SSH key → type **Signing**) — it's separate from the authentication key you push with. Until then commits sign locally but show as *Unverified* on GitHub. If the key isn't present yet:
+**YubiKey SSH key** — both pushing and commit signing use your FIDO2 resident key (`~/.ssh/id_ecdsa_sk_rk`). The key can't live in this public repo and a hardware touch can't be declared, so export it from the YubiKey once per machine (touch + PIN):
 ```bash
-ssh-add ~/.ssh/id_ecdsa_sk_rk   # touch the YubiKey
+mkdir -p ~/.ssh && chmod 700 ~/.ssh
+cd ~/.ssh && ssh-keygen -K     # writes id_ecdsa_sk_rk and id_ecdsa_sk_rk.pub
 ```
+That single step lights up everything else, because it's already wired declaratively:
+- **Pushing** — `home/ssh.nix` points `github.com` at this key, so `git push` over SSH works with just a touch (no `ssh-agent`, no manual `ssh-add`). If you cloned over HTTPS, switch the remote once: `git remote set-url origin git@github.com:1-bit-wonder/noctix-os.git`.
+- **Signing** — `home/dev.nix` signs commits with the matching `.pub`. Until the key exists, commits still build but sign as a no-op and show *Unverified* on GitHub.
+
+Register the key on GitHub **twice** (Settings → SSH and GPG keys → New SSH key): once as an **Authentication key** (to push) and once as a **Signing key** (to verify commits) — GitHub tracks the two roles separately even for the same key.
 
 **Dev runtimes** — none are preinstalled; pull what you need with mise:
 ```bash
@@ -207,6 +213,7 @@ home/
   apps.nix                        GTK/Qt theming, Kitty, Firefox
   services.nix                    user services (hypridle)
   dev.nix                         dev toolchain — mise, starship, git signing, CLI tools
+  ssh.nix                         SSH client config (FIDO2 key for GitHub push)
 
 assets/                           wallpaper images, logo
 ```

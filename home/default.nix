@@ -6,6 +6,7 @@
     ./apps.nix
     ./services.nix
     ./dev.nix
+    ./ssh.nix
   ];
 
   home.username = "ni";
