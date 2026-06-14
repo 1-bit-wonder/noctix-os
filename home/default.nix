@@ -3,7 +3,8 @@
     inputs.noctalia.homeModules.default
     ./hyprland.nix
     ./noctalia.nix
-    ./apps.nix
+    ./apps
+    ./theme.nix
     ./services.nix
     ./dev.nix
     ./ssh.nix
@@ -24,7 +25,7 @@
 
   # Wayland / toolkit environment (also set in Hyprland exec-once env, but
   # setting here ensures they're present in systemd user units and portals).
-  # QT_QPA_PLATFORMTHEME is intentionally omitted here — the qt module in apps.nix
+  # QT_QPA_PLATFORMTHEME is intentionally omitted here — the qt module in theme.nix
   # writes it to avoid conflicting definitions.
   home.sessionVariables = {
     EDITOR              = "nano";
