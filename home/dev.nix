@@ -38,8 +38,37 @@
       tag.gpgSign      = true;
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
+
+      # `git cc` — commit using the message Claude Code prepped at
+      # <git-dir>/CLAUDE_COMMIT_MSG, so I run the actual (YubiKey-signed) commit
+      # myself in my own shell while Claude only writes the message + stages files.
+      # The leading `!` runs the body through a shell so `$(git rev-parse
+      # --git-dir)` is evaluated — that keeps it working from subdirectories and
+      # inside git worktrees (where the git dir isn't a literal `.git`).
+      alias.cc = ''!git commit -F "$(git rev-parse --git-dir)/CLAUDE_COMMIT_MSG"'';
     };
   };
+
+  # Teach Claude Code the `git cc` workflow globally. Files in ~/.claude/rules/
+  # are a native Claude Code feature: every *.md there is auto-loaded as a
+  # user-level rule at session start and applies to every project on the
+  # machine, no per-project setup. Declarative + shared across hosts, so a fresh
+  # laptop build picks it up too. (Read-only nix symlink, so it can't be edited
+  # in-app — change it here and rebuild.) Pairs with alias.cc above.
+  home.file.".claude/rules/git-cc.md".text = ''
+    # Git commit workflow (YubiKey-signed)
+
+    When asked to commit:
+    1. Write the commit message to `<git-dir>/CLAUDE_COMMIT_MSG` (resolve
+       `<git-dir>` with `git rev-parse --git-dir`).
+    2. Stage the relevant files.
+    3. Do NOT run the commit yourself. Tell me to run `git cc` in my own
+       terminal — it's a global git alias that commits from that file. The
+       commit is signed by my YubiKey (FIDO2 SSH key), which needs an
+       interactive touch a sandboxed shell can't provide.
+
+    `git cc` and this rule are configured together in home/dev.nix.
+  '';
 
   home.packages = with pkgs; [
     claude-code          # agentic coding CLI
