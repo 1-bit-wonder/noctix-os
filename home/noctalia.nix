@@ -34,12 +34,16 @@ in {
       theme = {
         mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
         source = "wallpaper";
-        # Enable the built-in Kitty template so Noctalia regenerates
-        # ~/.config/kitty/themes/noctalia.conf (globincluded by kitty.conf) on every
-        # palette change and live-reloads running terminals to match light/dark.
+        # Enable the built-in app templates so Noctalia regenerates their theme
+        # files on every palette change:
+        #   kitty -> ~/.config/kitty/themes/noctalia.conf (globincluded by kitty.conf;
+        #            its post_hook live-reloads running terminals to match light/dark)
+        #   helix -> ~/.config/helix/themes/noctalia.toml (selected via theme="noctalia"
+        #            in home/apps.nix; no post_hook, so running Helix picks it up on the
+        #            next launch or :config-reload)
         templates = {
           enable_builtin_templates = true;
-          builtin_ids              = [ "kitty" ];
+          builtin_ids              = [ "kitty" "helix" ];
         };
       };
       wallpaper = {

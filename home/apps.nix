@@ -9,9 +9,14 @@
     enable = true;
   };
 
-  # Helix — modal editor
+  # Helix — modal editor. The "noctalia" theme is generated at runtime by
+  # Noctalia's built-in helix template (home/noctalia.nix) into
+  # ~/.config/helix/themes/noctalia.toml, so colors track the wallpaper palette.
+  # home-manager only manages helix/config.toml here, leaving that themes/ file
+  # untouched. Its `ui.background = "none"` lets the kitty background show through.
   programs.helix = {
     enable = true;
+    settings.theme = "noctalia";
   };
 
   # Firefox — managed by home-manager so extensions / policies can be added later
@@ -28,7 +33,7 @@
       size = 13;
     };
     settings = {
-      window_padding_width     = 12;
+      window_padding_width     = 0;
       background_opacity       = "0.95";
       cursor_blink_interval    = 0;
       confirm_os_window_close  = 0;
