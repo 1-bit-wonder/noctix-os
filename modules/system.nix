@@ -28,7 +28,10 @@
   };
 
   # Locale — change to your timezone, e.g. "Europe/London" or "America/Los_Angeles"
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Winnipeg";
+  # Windows dual-boot writes the RTC in local time; match it so the clock reads
+  # correctly under both OSes instead of being offset by the UTC difference.
+  time.hardwareClockInLocalTime = true;
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "en_US.UTF-8";
