@@ -20,6 +20,17 @@ in {
     enable = true;
     systemd.enable = true;
     settings = {
+      # Bar config lives under a *named* subtable; the app's default bar is named
+      # "default" (and runtime GUI overrides are written back to [bar.default]),
+      # so we override that one rather than spawn a second bar. Omitted fields —
+      # including the start/center/end widget lists — keep their built-in defaults.
+      bar.default = {
+        position    = "left";  # dock the bar to the left screen edge
+        radius      = 0;        # squared corners, no rounding
+        margin_edge = 0;        # flush against the left edge, no gap (0 = not floating)
+        margin_ends = 0;        # no inset; bar spans the full screen edge
+        thickness = 40;
+      };
       theme = {
         mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
         source = "wallpaper";
