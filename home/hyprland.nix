@@ -165,11 +165,14 @@ in {
       hl.bind(mod .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"))
       hl.bind(mod .. " + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 
-      -- Layout switching (hyprctl keyword updates general.layout at runtime)
-      hl.bind(mod .. " + ALT + D", hl.dsp.exec_cmd("hyprctl keyword general:layout dwindle"))
-      hl.bind(mod .. " + ALT + M", hl.dsp.exec_cmd("hyprctl keyword general:layout master"))
-      hl.bind(mod .. " + ALT + W", hl.dsp.exec_cmd("hyprctl keyword general:layout scrolling"))
-      hl.bind(mod .. " + ALT + O", hl.dsp.exec_cmd("hyprctl keyword general:layout monocle"))
+      -- Layout switching (the Lua parser rejects `hyprctl keyword`; set it via the API)
+      local function set_layout(name)
+        return function() hl.config({ general = { layout = name } }) end
+      end
+      hl.bind(mod .. " + ALT + D", set_layout("dwindle"))
+      hl.bind(mod .. " + ALT + M", set_layout("master"))
+      hl.bind(mod .. " + ALT + W", set_layout("scrolling"))
+      hl.bind(mod .. " + ALT + O", set_layout("monocle"))
 
       -- Focus (vim + arrows)
       hl.bind(mod .. " + H",     hl.dsp.focus({ direction = "left" }))
