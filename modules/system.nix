@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   # Bootloader
-  boot.loader.systemd-boot.enable = true;
+  boot.loader.limine.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   # Quiet boot — remove "quiet" here if you want to see kernel messages
   boot.kernelParams = [ "quiet" "loglevel=3" ];

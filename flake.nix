@@ -69,7 +69,7 @@
           image.fileName                = "noctix-os.iso";
 
           # iso-image.nix uses its own hybrid BIOS/EFI bootloader
-          boot.loader.systemd-boot.enable      = lib.mkForce false;
+          boot.loader.limine.enable            = lib.mkForce false;
           boot.loader.efi.canTouchEfiVariables = lib.mkForce false;
 
           # Strip quiet/loglevel so boot errors are visible on live media
