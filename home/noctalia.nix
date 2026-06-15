@@ -31,6 +31,10 @@ in {
         margin_ends = 0;        # no inset; bar spans the full screen edge
         thickness = 40;
       };
+      # Launcher bar widget: swap the default "search" magnifier for a
+      # moon-with-stars glyph to match the Noctix night branding. (Plain
+      # "moon" is the nightlight toggle's icon, so use "moon-stars" instead.)
+      widget.launcher.glyph = "moon-stars";
       theme = {
         mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
         source = "wallpaper";
