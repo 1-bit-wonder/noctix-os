@@ -1,20 +1,6 @@
 { pkgs, lib, config, ... }: let
-  wallpaperDir   = "/home/ni/Pictures/Wallpapers";
-  dayWallpaper   = "${wallpaperDir}/lone_tree_day.webp";
-  nightWallpaper = "${wallpaperDir}/lone_tree_night.webp";
-
-  noctaliaBin = lib.getExe config.programs.noctalia.package;
-
-  # Noctalia does NOT swap the wallpaper when the theme mode flips — it only
-  # recomputes the palette and fires `theme_mode_changed` (with $NOCTALIA_THEME_MODE).
-  # So we react to that hook and set the matching wallpaper ourselves. Hook commands
-  # are exec'd directly (no shell), hence a script rather than an inline `case`.
-  wallpaperForMode = pkgs.writeShellScript "noctalia-wallpaper-for-mode" ''
-    case "$NOCTALIA_THEME_MODE" in
-      light) exec ${noctaliaBin} msg wallpaper-set ${dayWallpaper} ;;
-      *)     exec ${noctaliaBin} msg wallpaper-set ${nightWallpaper} ;;
-    esac
-  '';
+  wallpaperDir     = "/home/ni/Pictures/Wallpapers";
+  defaultWallpaper = "${wallpaperDir}/waves_violet.webp";
 in {
   programs.noctalia = {
     enable = true;
@@ -43,7 +29,7 @@ in {
       # rounding) so they match the squared corners everywhere else.
       widget.workspaces.capsule_radius = 0;
       theme = {
-        mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
+        mode   = "dark";   # stay dark; no day/night switching (avoids clashing with the wallpaper switcher)
         source = "wallpaper";
         # Enable the built-in app templates so Noctalia regenerates their theme
         # files on every palette change:
@@ -62,14 +48,14 @@ in {
         directory           = wallpaperDir;
         fill_mode           = "crop";
         transition_duration = 1500;
-        default.path        = dayWallpaper;
+        default.path        = defaultWallpaper;
       };
-      hooks.theme_mode_changed = "${wallpaperForMode}";
     };
   };
 
-  # Single flat wallpaper dir — the theme_mode_changed hook switches between the
-  # day/night images, so no light/dark subfolders (or automation) are needed.
+  # Single flat wallpaper dir. The day/night images stay available in the
+  # switcher, but waves_violet is the fixed default and nothing swaps it
+  # automatically (theme mode is pinned to dark).
   home.file."Pictures/Wallpapers/lone_tree_day.webp".source   = ../assets/lone_tree_day.webp;
   home.file."Pictures/Wallpapers/lone_tree_night.webp".source = ../assets/lone_tree_night.webp;
   home.file."Pictures/Wallpapers/waves_violet.webp".source    = ../assets/waves_violet.webp;
