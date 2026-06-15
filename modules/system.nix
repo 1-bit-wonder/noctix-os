@@ -1,40 +1,58 @@
 { pkgs, ... }:
 let
-  # Boot logo: render assets/logo.svg (the noctix-os crescent) to a PNG at build
-  # time with resvg, so the bootloader image stays in sync with the source SVG and
-  # no binary blob lives in the repo. Limine centers this on the backdrop below.
-  bootLogo = pkgs.runCommand "boot-logo.png" { } ''
-    ${pkgs.resvg}/bin/resvg --width 384 --height 384 ${../assets/logo.svg} $out
+  # Full-screen 4K Limine menu background: the noctix-os crescent in the upper
+  # third (clear of the vertically-centered menu) on the Catppuccin base, rendered
+  # from assets/logo.svg at 8-bit (Limine's decoder mishandles 16-bit PNGs).
+  bootWallpaper = pkgs.runCommand "boot-wallpaper.png" { } ''
+    ${pkgs.resvg}/bin/resvg --width 560 --height 560 ${../assets/logo.svg} logo.png
+    ${pkgs.imagemagick}/bin/magick -size 3840x2160 canvas:'#1e1e2e' \
+      logo.png -gravity North -geometry +0+280 -composite \
+      -depth 8 -strip PNG24:$out
   '';
 in
 {
   # Bootloader
   boot.loader.limine.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  # Quiet boot — remove "quiet" here if you want to see kernel messages
-  boot.kernelParams = [ "quiet" "loglevel=3" ];
+  # No "quiet": there's no boot splash (Plymouth wouldn't render on this GPU), so
+  # show the console text during the bootloader → greeter handoff. loglevel=3
+  # trims kernel noise while leaving systemd's progress visible.
+  boot.kernelParams = [ "loglevel=3" ];
 
   # Keep the menu uncluttered — only the 3 newest generations are listed as boot
   # entries (older ones still exist on disk; `nix-collect-garbage` removes them).
   boot.loader.limine.maxGenerations = 3;
 
+  # Dual-boot: Limine doesn't auto-detect other OSes, so chainload the Windows
+  # Boot Manager from its own EFI System Partition. guid() is the GPT partition
+  # UUID of nvme2n1p2 (the Windows ESP) — stable across reboots, unlike /dev names.
+  boot.loader.limine.extraEntries = ''
+    /Windows
+    comment: Windows Boot Manager
+    protocol: efi_chainload
+    path: guid(420d4b1c-ad8b-4897-a173-e50a61d1ceb3):/EFI/Microsoft/Boot/bootmgfw.efi
+  '';
+
   # Themed boot menu — Catppuccin Mocha palette, matching the desktop/terminal.
   boot.loader.limine.style = {
-    # Centered crescent logo over a solid Mocha-base backdrop (no full wallpaper).
-    wallpapers = [ bootLogo ];
-    wallpaperStyle = "centered";
-    backdrop = "1e1e2e"; # Catppuccin base — fills the screen around the logo
+    # Full-screen 4K wallpaper (logo up top); stretched is a 1:1 no-op at 4K.
+    wallpapers = [ bootWallpaper ];
+    wallpaperStyle = "stretched";
 
     interface = {
-      branding = "noctix-os"; # title at the top of the menu
-      brandingColor = "cba6f7"; # mauve
+      resolution = "3840x2160"; # match the panel so the wallpaper isn't scaled
+      branding = ""; # the logo is the brand — no text title
       helpColor = "6c7086"; # overlay0 — dim the keybind hints
       helpColorBright = "cba6f7"; # mauve — the auto-boot countdown digit
     };
 
     graphicalTerminal = {
       foreground = "cdd6f4"; # text
-      background = "001e1e2e"; # base, fully transparent (TT=00) so the logo shows
+      # TTRRGGBB — TT is transparency: 00 = OPAQUE, ff = TRANSPARENT. Must be ff,
+      # else Limine paints an opaque terminal layer over the wallpaper and the
+      # logo vanishes (only the text, drawn on top, shows). RGB is moot when fully
+      # transparent; keep base as a harmless fallback.
+      background = "ff1e1e2e";
       brightForeground = "ffffff";
       # 8-color palette: black red green brown blue magenta cyan gray
       palette = "45475a;f38ba8;a6e3a1;f9e2af;89b4fa;cba6f7;94e2d5;bac2de";

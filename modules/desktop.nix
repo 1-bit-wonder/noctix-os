@@ -14,9 +14,6 @@ in {
     xwayland.enable = true;
   };
 
-  # Boot splash — seamless boot → login transition
-  boot.plymouth.enable = true;
-
   # Display manager — ReGreet: GTK4 Wayland greeter running inside cage.
   # programs.regreet sets up the greetd session automatically.
   services.greetd.enable = true;
