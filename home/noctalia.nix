@@ -31,10 +31,17 @@ in {
         margin_ends = 0;        # no inset; bar spans the full screen edge
         thickness = 40;
       };
+      # Global UI corner roundness. 0.0 squares every rounded surface (panels,
+      # popups, menus) to match our squared windows and bar; 1.0 is the default
+      # rounding. The GUI's "Interface > UI corner roundness" slider writes here.
+      shell.corner_radius_scale = 0.0;
       # Launcher bar widget: swap the default "search" magnifier for a
       # moon-with-stars glyph to match the Noctix night branding. (Plain
       # "moon" is the nightlight toggle's icon, so use "moon-stars" instead.)
       widget.launcher.glyph = "moon-stars";
+      # Workspaces widget: square the per-workspace capsule pills (0 = no
+      # rounding) so they match the squared corners everywhere else.
+      widget.workspaces.capsule_radius = 0;
       theme = {
         mode   = "auto";   # follow day/night; the hook below swaps the wallpaper to match
         source = "wallpaper";
