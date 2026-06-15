@@ -14,4 +14,28 @@
       fastfetch
     end
   '';
+
+  # `rebuild` — apply this flake to the current machine. The flake attribute is
+  # omitted on purpose: nixos-rebuild defaults to nixosConfigurations.$(hostname),
+  # and our host configs are named to match their hostName ("desktop"/"laptop"),
+  # so the same abbr does the right thing on every host. Absolute flake path so it
+  # works from any directory. An abbr (not an alias) expands inline before you hit
+  # enter, so the full command is visible and editable (e.g. to add --show-trace).
+  programs.fish.shellAbbrs = {
+    rebuild = "sudo nixos-rebuild switch --flake /home/ni/Code/Systems/noctix-os --accept-flake-config";
+  };
+
+  # `noctalia-reseed` — force Noctalia to re-seed from the flake-managed
+  # ~/.config/noctalia/config.toml. Noctalia's writable runtime state in
+  # ~/.local/state/noctalia/settings.toml OVERRIDES config.toml, so a declarative
+  # change in home/noctalia.nix won't take effect for any key already persisted
+  # there. Run this after such a change isn't showing up: it stops noctalia, drops
+  # the runtime file (home-manager never touches it), and restarts to re-seed.
+  # Kept as an explicit, opt-in function — it discards GUI-side tweaks — rather
+  # than wiring it into `rebuild`.
+  programs.fish.functions.noctalia-reseed = ''
+    systemctl --user stop noctalia
+    rm -f ~/.local/state/noctalia/settings.toml
+    systemctl --user start noctalia
+  '';
 }
