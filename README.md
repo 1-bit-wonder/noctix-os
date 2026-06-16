@@ -148,7 +148,7 @@ To add a *different* machine from scratch:
 |---|---|
 | `Super + Q` | Close · `Super + F` fullscreen · `Super + M` maximize |
 | `Super + V` | Toggle floating · `Super + C` center · `Super + P` pseudo-tile |
-| `Super + Shift + P` | Pin · `Super + T` toggle split · `Alt + Tab` cycle |
+| `Super + Shift + P` | Pin · `Super + T` toggle split · `Alt + Tab` window switcher (all workspaces) |
 | `Super + H/J/K/L` | Focus (or arrow keys) |
 | `Super + Shift + H/J/K/L` | Move window |
 | `Super + Ctrl + H/J/K/L` | Resize window |
@@ -164,6 +164,7 @@ To add a *different* machine from scratch:
 | Screenshots & media | |
 |---|---|
 | `Print` / `Shift + Print` | Region / full screen → annotate (swappy) |
+| `Super + Print` | Active window → annotate (swappy) |
 | `Ctrl + Print` | Region → clipboard |
 | `XF86Audio*` / `XF86MonBrightness*` | Volume / media / brightness (via Noctalia) |
 | `Super + Shift + E` | Exit Hyprland session |

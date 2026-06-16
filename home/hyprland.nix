@@ -145,11 +145,9 @@ in {
       hl.bind(mod .. " + SHIFT + P", hl.dsp.window.pin())
       hl.bind(mod .. " + T",         hl.dsp.layout("togglesplit"))
 
-      -- Window cycling
-      hl.bind("ALT + Tab", function()
-        hl.dispatch(hl.dsp.window.cycle_next())
-        hl.dispatch(hl.dsp.window.bring_to_top())
-      end)
+      -- Window switching — Noctalia's all-windows overlay (spans every
+      -- workspace, unlike `cyclenext` which only rotates the current one)
+      hl.bind("ALT + Tab", hl.dsp.exec_cmd("noctalia msg window-switcher"))
 
       -- Applications
       hl.bind(mod .. " + R",         hl.dsp.exec_cmd("noctalia msg panel-toggle launcher"))
@@ -219,6 +217,8 @@ in {
       hl.bind("Print",         hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | swappy -f -"))
       hl.bind("SHIFT + Print", hl.dsp.exec_cmd("grim - | swappy -f -"))
       hl.bind("CTRL + Print",  hl.dsp.exec_cmd("grim -g \"$(slurp)\" - | wl-copy"))
+      -- Super+Print: the focused window only (grabs its geometry from Hyprland)
+      hl.bind(mod .. " + Print", hl.dsp.exec_cmd([[grim -g "$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')" - | swappy -f -]]))
 
       -- Media / brightness (locked = works on lock screen)
       hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("noctalia msg volume-up"),       { locked = true })

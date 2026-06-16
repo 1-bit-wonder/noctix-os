@@ -26,12 +26,17 @@
 
   # Git — commit signing via the YubiKey FIDO2 resident SSH key (no GPG needed).
   # Reuses ~/.ssh/id_ecdsa_sk_rk.pub, the same sk-ecdsa key used to push.
-  # NOTE: set your identity per-machine with `git config --global user.{name,email}`;
-  # it's intentionally not baked into this public repo. Signing is no-op until the
-  # YubiKey key exists on the machine, so it's safe on the laptop stub / ISO.
+  # Identity is declared here, not via `git config --global` — home-manager
+  # symlinks ~/.config/git/config into the read-only Nix store, so the imperative
+  # command fails with "Read-only file system". Edit here + rebuild instead.
+  # The email is GitHub's no-reply form to keep a real address out of this public
+  # repo. Signing is a no-op until the YubiKey key exists on the machine, so it's
+  # safe on the laptop stub / ISO.
   programs.git = {
     enable = true;
     settings = {
+      user.name        = "Ni";
+      user.email       = "22556482+1-bit-wonder@users.noreply.github.com";
       gpg.format       = "ssh";
       user.signingKey  = "~/.ssh/id_ecdsa_sk_rk.pub";
       commit.gpgSign   = true;
