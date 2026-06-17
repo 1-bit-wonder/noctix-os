@@ -16,6 +16,20 @@
       # FIDO2 resident SSH key (sk-ecdsa) — the same key used for commit signing.
       IdentityFile   = "~/.ssh/id_ecdsa_sk_rk";
       IdentitiesOnly = true;
+      # Cache the key in the agent after the first use so the PIN is asked once.
+      AddKeysToAgent = "yes";
     };
   };
+
+  # ssh-agent, so the YubiKey is "unlocked" (PIN entered) once per session instead
+  # of on every commit/push. Runs as a systemd user service and exports
+  # SSH_AUTH_SOCK into the session ($XDG_RUNTIME_DIR/ssh-agent). The key is loaded
+  # on demand: `git cc` (home/dev.nix) runs `ssh-add` if the agent is empty, and
+  # github.com pushes add it via AddKeysToAgent above.
+  #
+  # NOTE: this caches the FIDO2 *PIN* only. The physical *touch* is user-presence
+  # enforced by the YubiKey itself and is required per-signature — it cannot be
+  # cached. (Dropping it would mean regenerating the key with `no-touch-required`,
+  # which weakens it and needs re-registering on GitHub.)
+  services.ssh-agent.enable = true;
 }

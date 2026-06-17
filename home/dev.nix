@@ -69,6 +69,8 @@
       tag.gpgSign      = true;
       init.defaultBranch = "main";
       push.autoSetupRemote = true;
+      # Open commit messages in Helix (not the EDITOR=nano default).
+      core.editor      = "hx";
 
       # `git cc` — commit using the message Claude Code prepped at
       # <git-dir>/CLAUDE_COMMIT_MSG, so I run the actual (YubiKey-signed) commit
@@ -76,7 +78,14 @@
       # The leading `!` runs the body through a shell so `$(git rev-parse
       # --git-dir)` is evaluated — that keeps it working from subdirectories and
       # inside git worktrees (where the git dir isn't a literal `.git`).
-      alias.cc = ''!git commit -F "$(git rev-parse --git-dir)/CLAUDE_COMMIT_MSG"'';
+      #
+      # Two extras vs a plain `git commit -F`:
+      #   - `ssh-add` first if the agent is empty, so the YubiKey PIN is entered
+      #     once per session (the agent caches it; see services.ssh-agent in
+      #     home/ssh.nix). The touch is still required per commit.
+      #   - `-e` opens the prepped message in Helix (core.editor above) for a
+      #     final review/edit before the commit is created.
+      alias.cc = ''!f() { ssh-add -l >/dev/null 2>&1 || ssh-add ~/.ssh/id_ecdsa_sk_rk; git commit -e -F "$(git rev-parse --git-dir)/CLAUDE_COMMIT_MSG"; }; f'';
     };
   };
 
