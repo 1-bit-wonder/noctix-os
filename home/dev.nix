@@ -24,6 +24,32 @@
     enableGitIntegration = true;
   };
 
+  # VS Code — Astro's officially recommended editor. Extensions are pinned
+  # declaratively from nixpkgs (current HM schema nests these under
+  # profiles.default). The Astro extension bundles the language server,
+  # .astro syntax highlighting, and formatting.
+  programs.vscode = {
+    enable = true;
+    profiles.default = {
+      extensions = [
+        pkgs.vscode-extensions.astro-build.astro-vscode
+        pkgs.vscode-extensions.biomejs.biome   # fast JS/TS/JSON linter + formatter
+      ];
+      userSettings = {
+        # Use the Astro extension as the formatter for .astro files, and Biome
+        # for the JS/TS/JSON family it handles.
+        "[astro]"."editor.defaultFormatter" = "astro-build.astro-vscode";
+        "[javascript]"."editor.defaultFormatter" = "biomejs.biome";
+        "[javascriptreact]"."editor.defaultFormatter" = "biomejs.biome";
+        "[typescript]"."editor.defaultFormatter" = "biomejs.biome";
+        "[typescriptreact]"."editor.defaultFormatter" = "biomejs.biome";
+        "[json]"."editor.defaultFormatter" = "biomejs.biome";
+        "[jsonc]"."editor.defaultFormatter" = "biomejs.biome";
+        "editor.formatOnSave" = true;
+      };
+    };
+  };
+
   # Git — commit signing via the YubiKey FIDO2 resident SSH key (no GPG needed).
   # Reuses ~/.ssh/id_ecdsa_sk_rk.pub, the same sk-ecdsa key used to push.
   # Identity is declared here, not via `git config --global` — home-manager
@@ -77,6 +103,7 @@
 
   home.packages = with pkgs; [
     claude-code          # agentic coding CLI
+    zed-editor           # zed — GPU-accelerated code editor
 
     # Modern CLI staples
     ripgrep              # rg — fast grep

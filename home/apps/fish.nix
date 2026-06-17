@@ -21,8 +21,13 @@
   # so the same abbr does the right thing on every host. Absolute flake path so it
   # works from any directory. An abbr (not an alias) expands inline before you hit
   # enter, so the full command is visible and editable (e.g. to add --show-trace).
+  # `update` — bump flake.lock to the latest inputs (nixpkgs/home-manager/
+  # noctalia), then rebuild. `; and` chains so the rebuild only runs if the lock
+  # update succeeded. Plain `rebuild` (above) applies the *current* lock without
+  # bumping versions; this one upgrades. Same absolute flake path + cache flag.
   programs.fish.shellAbbrs = {
     rebuild = "sudo nixos-rebuild switch --flake /home/ni/Code/Systems/noctix-os --accept-flake-config";
+    update  = "nix flake update --flake /home/ni/Code/Systems/noctix-os --accept-flake-config; and sudo nixos-rebuild switch --flake /home/ni/Code/Systems/noctix-os --accept-flake-config";
   };
 
   # `noctalia-reseed` — force Noctalia to re-seed from the flake-managed

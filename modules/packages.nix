@@ -20,6 +20,20 @@
     gnome-calculator
     gnome-calendar
 
+    # Messaging & calls (client comms)
+    signal-desktop        # encrypted messaging
+    discord
+    telegram-desktop
+    slack
+    zoom-us               # video calls
+
+    # Graphics
+    inkscape              # vector graphics editor
+    gimp                  # raster graphics editor
+
+    # Torrents
+    qbittorrent
+
     # Media
     vlc
     mpv
