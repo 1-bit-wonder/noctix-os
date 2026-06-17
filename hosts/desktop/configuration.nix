@@ -8,6 +8,7 @@
     ../../modules/system.nix
     ../../modules/desktop.nix
     ../../modules/packages.nix
+    ../../modules/peripherals.nix
   ];
 
   networking.hostName = "desktop";
