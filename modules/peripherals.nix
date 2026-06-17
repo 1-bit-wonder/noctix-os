@@ -32,9 +32,12 @@
         name = "MX Master 4";
 
         # Free-spinning wheel that ratchets at low speed / unlocks when flicked.
+        # This is the SAME setting as Solaar's "Smart Shift" slider — both write
+        # the same HID++ register, so let logiops own it and DON'T also set it in
+        # Solaar (logid re-applies this on wake/reconnect and would clobber it).
         smartshift = {
           on = true;
-          threshold = 30;   # higher = more flick needed before it free-spins
+          threshold = 10;   # lower = lighter flick frees the wheel (tuned to taste)
         };
 
         # Smooth (hi-res) scrolling.

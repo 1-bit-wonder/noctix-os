@@ -99,6 +99,15 @@ in {
           kb_layout    = "us",
           follow_mouse = 1,
           sensitivity  = 0,
+          -- MX Master 4 has a hi-res (v120) scroll wheel. Leave discrete-scroll
+          -- emulation on auto (1): forcing it to 2 chops the free-spin glide into
+          -- stepped notches, which feels wrong when smartshift unlocks the wheel.
+          -- If free-spin STILL feels stepped, drop to 0 (fully disable emulation)
+          -- for raw-smooth scrolling — trade-off: Super+scroll may then jump
+          -- several workspaces on a fast flick. Tame touchiness with a per-device
+          -- scroll_factor (add a `device { name = ...; scroll_factor = 0.5 }`
+          -- block, name from `hyprctl devices`), not by quantizing.
+          emulate_discrete_scroll = 1,
           touchpad = {
             natural_scroll = true,
             tap_to_click   = true,
