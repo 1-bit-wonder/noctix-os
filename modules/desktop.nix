@@ -1,5 +1,11 @@
 { lib, pkgs, inputs, ... }: let
-  wallpaper = ../assets/waves_violet.webp;
+  # ReGreet renders the background via GdkPixbuf, and its bundled
+  # GDK_PIXBUF_MODULE_FILE has no webp loader — a .webp path silently fails to
+  # decode and the greeter shows a blank grey background. Convert our source
+  # webp to PNG at build time (PNG is a gdk-pixbuf built-in loader) so it renders.
+  wallpaper = pkgs.runCommand "greeter-wallpaper.png" { } ''
+    ${pkgs.imagemagick}/bin/magick ${../assets/waves_violet.webp} -strip $out
+  '';
 in {
   # GPU drivers — required for Hyprland to start on real hardware.
   # programs.hyprland does NOT enable this automatically.
