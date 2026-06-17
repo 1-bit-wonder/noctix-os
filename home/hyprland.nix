@@ -46,7 +46,8 @@ in {
       hl.env("MOZ_ENABLE_WAYLAND",                  "1")
       hl.env("_JAVA_AWT_WM_NONREPARENTING",         "1")
       hl.env("NIXOS_OZONE_WL",                      "1")
-      hl.env("WLR_NO_HARDWARE_CURSORS",             "1")
+      -- (software cursors are set via cursor.no_hardware_cursors below; the old
+      --  WLR_NO_HARDWARE_CURSORS env var is a no-op on Hyprland's aquamarine backend)
 
       -- ── Config ───────────────────────────────────────────────────────────────
       hl.config({
@@ -103,6 +104,13 @@ in {
             tap_to_click   = true,
             drag_lock      = true,
           },
+        },
+
+        cursor = {
+          -- RTX 2080: hardware cursors flicker / vanish on slow movement.
+          -- Software-compositing the cursor draws it every frame, fixing that.
+          no_hardware_cursors = true,
+          inactive_timeout    = 0,  -- never auto-hide (0 = default; explicit for clarity)
         },
 
         misc = {
