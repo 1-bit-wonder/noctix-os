@@ -18,6 +18,10 @@ in {
   programs.hyprland = {
     enable = true;
     xwayland.enable = true;
+    # Links uwsm's systemd user units onto the user unit path and enables
+    # programs.uwsm, so the greeter's "Hyprland (uwsm-managed)" session starts
+    # cleanly instead of crashing on a missing wayland-session-bindpid@.service.
+    withUWSM = true;
   };
 
   # Display manager — ReGreet: GTK4 Wayland greeter running inside cage.

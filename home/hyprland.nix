@@ -16,8 +16,10 @@ in {
       -- ── Autostart ────────────────────────────────────────────────────────────
       hl.on("hyprland.start", function()
         hl.exec_cmd("${polkitAgent}")
-        -- nm-applet omitted: Noctalia's control center handles WiFi (Super+N), no tray icon needed
-        hl.exec_cmd("blueman-applet")
+        -- No nm-applet / blueman-applet tray: Noctalia's control center owns
+        -- WiFi (Super+N) and Bluetooth (Super+B). Their XDG-autostart .desktop
+        -- entries are suppressed below (uwsm runs those; plain Hyprland didn't),
+        -- otherwise they'd double up Noctalia's built-in bar widgets.
         hl.exec_cmd("hypridle")
         -- clipboard history (stores text + images via wl-paste → cliphist)
         hl.exec_cmd("wl-paste --type text  --watch cliphist store")
@@ -275,4 +277,19 @@ in {
       hl.window_rule({ name = "steam",     match = { class = "^(steam_app_)(.*)$" },     fullscreen = true })
     '';
   };
+
+  # Suppress the freedesktop XDG-autostart tray applets. uwsm activates
+  # wayland-session-xdg-autostart@hyprland.desktop.target, which launches every
+  # /etc/xdg/autostart/*.desktop — something plain Hyprland never did. nm-applet
+  # and blueman duplicate Noctalia's built-in WiFi/Bluetooth bar widgets, and the
+  # printer applet adds a stray tray icon. A same-named entry in ~/.config/autostart
+  # with Hidden=true wins over the system one (XDG_CONFIG_HOME has priority), so
+  # uwsm skips them. Filenames must match the system .desktop ids exactly.
+  xdg.configFile =
+    let hidden = { text = "[Desktop Entry]\nHidden=true\n"; };
+    in {
+      "autostart/nm-applet.desktop"   = hidden;  # NetworkManager tray (networkmanagerapplet)
+      "autostart/blueman.desktop"     = hidden;  # Bluetooth tray (services.blueman)
+      "autostart/print-applet.desktop" = hidden; # CUPS print queue tray (system-config-printer)
+    };
 }
