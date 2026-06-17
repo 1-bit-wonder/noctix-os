@@ -1,5 +1,5 @@
-{ lib, pkgs, ... }: let
-  wallpaper = ../assets/lone_tree_day.webp;
+{ lib, pkgs, inputs, ... }: let
+  wallpaper = ../assets/waves_violet.webp;
 in {
   # GPU drivers — required for Hyprland to start on real hardware.
   # programs.hyprland does NOT enable this automatically.
@@ -19,6 +19,9 @@ in {
   services.greetd.enable = true;
   programs.regreet = {
     enable = true;
+    # Pinned to 0.3.0 from nixpkgs-regreet — 0.4.0's GStreamer-backed background
+    # crashes the greeter on this GPU. See the nixpkgs-regreet input in flake.nix.
+    package = inputs.nixpkgs-regreet.legacyPackages.${pkgs.system}.regreet;
     settings = {
       background = {
         path = "${wallpaper}";

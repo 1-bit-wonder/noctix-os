@@ -16,6 +16,13 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Pinned solely to source ReGreet 0.3.0. ReGreet 0.4.0 (current unstable)
+    # loads its background through GTK4 GtkMediaFile -> GStreamer GstPlay, whose
+    # GL pipeline fatally aborts on this machine's GPU (greeter never appears).
+    # 0.3.0 renders the background with GdkPixbuf and has no GStreamer dependency.
+    # This is the last nixpkgs rev before the 06-16 bump, which shipped 0.3.0.
+    # Revisit when 0.4.x is fixed; see modules/desktop.nix programs.regreet.package.
+    nixpkgs-regreet.url = "github:nixos/nixpkgs/a799d3e3886da994fa307f817a6bc705ae538eeb";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
