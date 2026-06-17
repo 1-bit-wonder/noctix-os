@@ -1,4 +1,28 @@
-{ ... }: {
+{ pkgs, ... }: {
+  # Solaar's tray icon defaults to a battery-level glyph, which at bar size reads
+  # like a clipboard. `--battery-icons solaar` makes it use Solaar's own logo
+  # instead, but that flag is launch-time only and nothing persists it. Overriding
+  # the .desktop Exec is fragile here — Noctalia's launcher caches the package's
+  # system .desktop by absolute path, bypassing any user-level override. So bake
+  # the flag into the binary: every caller (launcher, autostart, CLI) inherits it,
+  # regardless of which .desktop launches `solaar`. symlinkJoin wraps the existing
+  # build — no rebuild from source. The module below installs this via pkgs.solaar.
+  nixpkgs.overlays = [
+    (final: prev: {
+      solaar = prev.symlinkJoin {
+        name = "solaar-logo-tray";
+        paths = [ prev.solaar ];
+        nativeBuildInputs = [ prev.makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/solaar --add-flags "--battery-icons solaar"
+        '';
+        # Preserve the passthru the wrap would otherwise drop — the logitech
+        # NixOS module reads `solaar.udev` for its udev rules package.
+        passthru = (prev.solaar.passthru or { }) // { inherit (prev.solaar) udev; };
+      };
+    })
+  ];
+
   # Logitech MX Keys S (keyboard) + MX Master 4 (mouse).
   #
   # On Linux there is no Logitech Options+. Two tools cover it:
