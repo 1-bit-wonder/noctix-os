@@ -4,7 +4,7 @@
   # decode and the greeter shows a blank grey background. Convert our source
   # webp to PNG at build time (PNG is a gdk-pixbuf built-in loader) so it renders.
   wallpaper = pkgs.runCommand "greeter-wallpaper.png" { } ''
-    ${pkgs.imagemagick}/bin/magick ${../assets/waves_violet.webp} -strip $out
+    ${pkgs.imagemagick}/bin/magick ${../assets/noctix_logo_light.webp} -strip $out
   '';
 in {
   # GPU drivers — required for Hyprland to start on real hardware.

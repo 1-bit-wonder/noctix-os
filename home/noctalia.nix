@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }: let
   wallpaperDir     = "/home/ni/Pictures/Wallpapers";
-  defaultWallpaper = "${wallpaperDir}/waves_violet.webp";
+  defaultWallpaper = "${wallpaperDir}/noctix_logo_light.webp";
 in {
   programs.noctalia = {
     enable = true;
@@ -53,10 +53,13 @@ in {
     };
   };
 
-  # Single flat wallpaper dir. The day/night images stay available in the
-  # switcher, but waves_violet is the fixed default and nothing swaps it
-  # automatically (theme mode is pinned to dark).
+  # Single flat wallpaper dir. The other images stay available in the
+  # switcher, but noctix_logo_light is the fixed default.
   home.file."Pictures/Wallpapers/lone_tree_day.webp".source   = ../assets/lone_tree_day.webp;
   home.file."Pictures/Wallpapers/lone_tree_night.webp".source = ../assets/lone_tree_night.webp;
   home.file."Pictures/Wallpapers/waves_violet.webp".source    = ../assets/waves_violet.webp;
+  home.file."Pictures/Wallpapers/smoke_teal.webp".source      = ../assets/smoke_teal.webp;
+  home.file."Pictures/Wallpapers/marble_blue.webp".source     = ../assets/marble_blue.webp;
+  home.file."Pictures/Wallpapers/noctix_logo_dark.webp".source  = ../assets/noctix_logo_dark.webp;
+  home.file."Pictures/Wallpapers/noctix_logo_light.webp".source = ../assets/noctix_logo_light.webp;
 }
