@@ -64,9 +64,18 @@
           threshold = 10;   # lower = lighter flick frees the wheel (tuned to taste)
         };
 
-        # Smooth (hi-res) scrolling.
+        # Smooth (hi-res) scrolling — handled NATIVELY by the kernel
+        # hid-logitech-hidpp driver + libinput, which we let own it.
+        #
+        # Do NOT set `hires = true` here. That makes logid intercept the wheel's
+        # raw v120 events and re-emit them itself; logid 0.3.x's hi-res
+        # accumulator mishandles the fast event bursts smartshift's free-spin
+        # produces, causing scroll REVERSALS and OVER-SCROLL. Since we don't
+        # invert or retarget the wheel, logid has no reason to touch it at all.
+        # Leaving hires=false hands tick→scroll translation to libinput (robust),
+        # while smartshift (a separate HID++ register, above) keeps the free-spin.
         hiresscroll = {
-          hires = true;
+          hires = false;
           invert = false;
           target = false;
         };
