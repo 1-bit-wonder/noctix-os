@@ -11,6 +11,10 @@
 ![Noctalia](https://img.shields.io/badge/Noctalia-v5-cba6f7)
 ![home-manager](https://img.shields.io/badge/home--manager-managed-a6e3a1)
 
+<br />
+
+<img src="assets/desktop.webp" width="100%" alt="noctix-os desktop — Noctalia bar over the noctix crescent wallpaper" />
+
 </div>
 
 ---

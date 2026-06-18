@@ -25,6 +25,9 @@
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    # Back up (don't clobber) any pre-existing dotfile home-manager wants to own,
+    # e.g. a hand-set ~/.config/solaar/rules.yaml before it became managed.
+    backupFileExtension = "hm-bak";
     extraSpecialArgs = { inherit inputs; };
     users.ni = import ../../home/default.nix;
   };

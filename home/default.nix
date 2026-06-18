@@ -2,6 +2,7 @@
   imports = [
     inputs.noctalia.homeModules.default
     ./hyprland.nix
+    ./screenshots.nix
     ./noctalia.nix
     ./apps
     ./theme.nix
