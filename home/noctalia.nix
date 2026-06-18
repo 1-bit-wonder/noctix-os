@@ -1,6 +1,6 @@
 { pkgs, lib, config, ... }: let
   wallpaperDir     = "/home/ni/Pictures/Wallpapers";
-  defaultWallpaper = "${wallpaperDir}/noctix_logo_light.webp";
+  defaultWallpaper = "${wallpaperDir}/noctix_logo_dark.webp";
 in {
   programs.noctalia = {
     enable = true;
@@ -31,6 +31,9 @@ in {
       theme = {
         mode   = "dark";   # stay dark; no day/night switching (avoids clashing with the wallpaper switcher)
         source = "wallpaper";
+        # Palette generation scheme. "dysfunctional" is Noctalia's "Disfunctional"
+        # scheme (replaces the built-in default "M3 Tonal Spot").
+        wallpaper_scheme = "dysfunctional";
         # Enable the built-in app templates so Noctalia regenerates their theme
         # files on every palette change:
         #   kitty -> ~/.config/kitty/themes/noctalia.conf (globincluded by kitty.conf;
@@ -54,7 +57,7 @@ in {
   };
 
   # Single flat wallpaper dir. The other images stay available in the
-  # switcher, but noctix_logo_light is the fixed default.
+  # switcher, but noctix_logo_dark is the fixed default.
   home.file."Pictures/Wallpapers/lone_tree_day.webp".source   = ../assets/lone_tree_day.webp;
   home.file."Pictures/Wallpapers/lone_tree_night.webp".source = ../assets/lone_tree_night.webp;
   home.file."Pictures/Wallpapers/waves_violet.webp".source    = ../assets/waves_violet.webp;
