@@ -167,5 +167,6 @@ in
     wget curl git vim htop unzip zip
     pciutils usbutils lshw
     libfido2              # fido2-token etc. — manage the YubiKey FIDO2 SSH key
+    yubikey-manager       # `ykman` — configure/inspect the YubiKey (FIDO2, OATH, etc.)
   ];
 }
