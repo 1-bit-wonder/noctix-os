@@ -68,6 +68,9 @@ in
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
+    # Restrict who may talk to the nix-daemon (default is everyone, "*"). Single-user
+    # box, so limit store/build operations to wheel. Build sandboxing stays on by default.
+    allowed-users = [ "@wheel" ];
     # Noctalia binary cache (mirrors flake.nix nixConfig for non-flake invocations)
     substituters = [
       "https://noctalia.cachix.org"
@@ -101,10 +104,55 @@ in
 
   # Networking
   networking.networkmanager.enable = true;
+  # The firewall is on by default; state it explicitly so the posture is visible.
+  # No inbound services run here (no SSH server, etc.). Note: services.avahi in
+  # desktop.nix opens UDP 5353 (mDNS) on the LAN for network-printer discovery —
+  # drop its `openFirewall` if you only ever print to known/static printers.
+  networking.firewall.enable = true;
 
   # Security
   security.rtkit.enable = true;
   security.polkit.enable = true;
+  # Memory-safe Rust reimplementation of sudo. Enabling it auto-disables the C
+  # sudo (security.sudo.enable -> mkDefault false), so it provides the `sudo`
+  # command. execWheelOnly: only wheel members may invoke sudo at all (defence-in-
+  # depth over the default, which still requires a password but lets any user try).
+  # `ni` is in wheel.
+  security.sudo-rs.enable = true;
+  security.sudo-rs.execWheelOnly = true;
+
+  # Firmware updates (UEFI / SSD / peripheral) via LVFS — `fwupdmgr refresh && update`.
+  # Security-relevant patches that the OS rebuild can't deliver. CPU microcode is
+  # handled separately by the generated hardware-configuration.
+  services.fwupd.enable = true;
+
+  # Kernel sysctl hardening — the "safe tier": blunts local-exploit primitives
+  # with zero daily-desktop friction. Deliberately OMITTED: unprivileged_userns
+  # clone=0 (would break the Firefox/Electron/Flatpak/nix-build sandboxes — a net
+  # loss here) and protectKernelImage (disables hibernation).
+  boot.kernel.sysctl = {
+    "kernel.kptr_restrict" = 2;            # hide kernel pointers (defeats an ASLR-bypass primitive)
+    "kernel.dmesg_restrict" = 1;           # ring buffer leaks addresses/crash info — root only
+    "kernel.yama.ptrace_scope" = 1;        # a process may ptrace only its own descendants
+    "kernel.unprivileged_bpf_disabled" = 1; # close the unprivileged eBPF LPE surface
+    "net.core.bpf_jit_harden" = 2;
+    "dev.tty.ldisc_autoload" = 0;          # block unprivileged line-discipline module loads (old CVEs)
+
+    # Network anti-spoofing / MITM noise — harmless on a desktop:
+    "net.ipv4.conf.all.rp_filter" = 1;
+    "net.ipv4.conf.default.rp_filter" = 1;
+    "net.ipv4.conf.all.accept_redirects" = false;
+    "net.ipv4.conf.all.send_redirects" = false;
+    "net.ipv6.conf.all.accept_redirects" = false;
+    "net.ipv4.conf.all.accept_source_route" = false;
+  };
+
+  # Blacklist legacy/exotic network protocols and filesystems this box never uses
+  # — each is pure attack surface with a CVE history and no hardware here needs it.
+  boot.blacklistedKernelModules = [
+    "dccp" "sctp" "rds" "tipc"                     # exotic network protocols
+    "cramfs" "freevxfs" "jffs2" "hfs" "hfsplus"    # legacy filesystems
+  ];
 
   # YubiKey / FIDO2 baseline — udev rules so the key is accessible without root,
   # for FIDO2 SSH keys (sk-ecdsa) and SSH commit signing. No PAM changes here;
