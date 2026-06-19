@@ -61,7 +61,18 @@
         # Solaar (logid re-applies this on wake/reconnect and would clobber it).
         smartshift = {
           on = true;
-          threshold = 10;   # lower = lighter flick frees the wheel (tuned to taste)
+          # SPEED — wheel speed needed to break into free-spin (0..50; 50 = never
+          # frees). logiops `threshold` == Solaar's "Scroll Wheel Ratchet Speed"
+          # (smart-shift). Higher = stays ratcheted (clicky) longer; 10 felt
+          # almost always-free, which read as a jump. Raise toward 50 for a
+          # mostly-ratcheted wheel, drop toward 10 for an eager free-spin.
+          threshold = 30;
+          # TORQUE — resistance of the detents (the MX Master 4 has a haptic
+          # ratchet). logiops `torque` == Solaar's "Scroll Wheel Ratchet Torque"
+          # (scroll-ratchet-torque), a 0..100 %. Pinned to the default 50 so it's
+          # explicit in-config rather than implied; the Solaar 10 you may see is
+          # `ignore`d/inactive. Raise for stiffer, more pronounced clicks.
+          torque = 50;
         };
 
         # Smooth (hi-res) scrolling — handled NATIVELY by the kernel
@@ -104,5 +115,40 @@
         # ];
       }
     ];
+  };
+
+  # logiops boot race. At boot, logid starts as soon as multi-user.target is up
+  # — before the MX Master is awake over HID++. The Bolt receiver enumerates
+  # almost immediately, but the wireless mouse only answers ~8s later (watch
+  # `journalctl -u logid -b`: "Detected receiver" then, seconds on, "Device
+  # found: MX Master 4"). logid applies smartshift/scroll config to that
+  # half-ready device, it doesn't take, and the wheel scrolls erratically —
+  # random jumps and backward kicks. A manual `systemctl restart logid` once the
+  # device is settled re-applies cleanly and fixes it. (This is the actual cause
+  # of the "smooth yesterday, jumpy again after reboot" regression — NOT Solaar
+  # and NOT the logiops/Solaar register conflict; see the scroll-jump note.)
+  #
+  # Automate the re-apply: when the receiver (046d:c548) enumerates, pull in a
+  # oneshot that waits for the mouse to wake, then restarts logid. The receiver
+  # exposes several hidraw interfaces so the rule fires a few times — systemd
+  # coalesces the start jobs while the unit is still in its ExecStartPre sleep,
+  # so the delay also debounces down to a single clean restart. Fires on boot,
+  # resume-from-suspend, and receiver replug; idle HID++ sleep/wake does NOT
+  # re-enumerate USB, so it does not fire on every wheel wake. Restarting logid
+  # reopens hidraw in userspace (no USB re-enumeration), so there is no loop.
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c548", TAG+="systemd", ENV{SYSTEMD_WANTS}+="logid-reapply.service"
+  '';
+
+  systemd.services.logid-reapply = {
+    description = "Re-apply logiops config after the MX Master settles (logid boot-race workaround)";
+    serviceConfig = {
+      Type = "oneshot";
+      # Cover the receiver-up -> mouse-awake gap (~8s observed); generous margin.
+      # Bump if a cold boot still comes up jumpy. The wheel may be briefly
+      # erratic until this fires, then settles for the rest of the session.
+      ExecStartPre = "${pkgs.coreutils}/bin/sleep 10";
+      ExecStart = "${pkgs.systemd}/bin/systemctl restart logid.service";
+    };
   };
 }
