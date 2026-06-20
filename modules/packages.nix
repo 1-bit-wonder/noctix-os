@@ -6,6 +6,7 @@
 
     # Browser (Firefox managed via home-manager programs.firefox; also here for root)
     firefox
+    google-chrome         # Chromium-based browser for testing / web apps (e.g. Apple Music PWA)
 
     # File management
     nautilus
@@ -17,8 +18,9 @@
     libreoffice-fresh
     thunderbird
     gnome-text-editor
-    gnome-calculator
+    qalculate-gtk         # powerful calculator (units, currency, symbolic) — replaces gnome-calculator
     gnome-calendar
+    obsidian              # Markdown knowledge base / notes (unfree)
 
     # Messaging & calls (client comms)
     signal-desktop        # encrypted messaging

@@ -269,7 +269,7 @@ in {
       hl.window_rule({ name = "float-pavucontrol", match = { class = "^(pavucontrol)$" },           float = true })
       hl.window_rule({ name = "float-blueman",      match = { class = "^(blueman-manager)$" },       float = true })
       hl.window_rule({ name = "float-nm",           match = { class = "^(nm-connection-editor)$" },  float = true })
-      hl.window_rule({ name = "float-calculator",   match = { class = "^(gnome-calculator)$" },      float = true })
+      hl.window_rule({ name = "float-calculator",   match = { class = "^(qalculate-gtk)$" },         float = true })
       hl.window_rule({ name = "float-printer",      match = { class = "^(system-config-printer)$" }, float = true })
 
       hl.window_rule({ name = "pip",       match = { title = "^(Picture-in-Picture)$" }, float = true, pin = true })
