@@ -152,7 +152,7 @@
     SCREENSHOT
       Screen Capture key      Menu: region / full screen / window / clipboard
                               (MX Keys S camera key, diverted via Solaar — see
-                               home/screenshots.nix)
+                               home/linux/screenshots.nix)
       Print                   Capture region → annotate (swappy)
       Shift + Print           Capture full screen → annotate
       Ctrl + Print            Capture region → clipboard

@@ -1,7 +1,7 @@
 { pkgs, ... }: {
   # Starship prompt theme — the user's own (powerline segments, Catppuccin palette),
   # kept as a verbatim file so the Nerd Font glyphs survive intact. programs.starship
-  # is enabled in home/apps.nix with no `settings`, so the module doesn't write its own
+  # is enabled in home/common/starship.nix with no `settings`, so the module doesn't write its own
   # starship.toml and there's no collision with this file.
   xdg.configFile."starship.toml".source = ./starship.toml;
 
@@ -57,7 +57,7 @@
   # command fails with "Read-only file system". Edit here + rebuild instead.
   # The email is GitHub's no-reply form to keep a real address out of this public
   # repo. Signing is a no-op until the YubiKey key exists on the machine, so it's
-  # safe on the laptop stub / ISO.
+  # safe on hosts without the key yet (the ISO, or a freshly set-up Mac).
   programs.git = {
     enable = true;
     settings = {
@@ -82,7 +82,7 @@
       # Two extras vs a plain `git commit -F`:
       #   - `ssh-add` first if the agent is empty, so the YubiKey PIN is entered
       #     once per session (the agent caches it; see services.ssh-agent in
-      #     home/ssh.nix). The touch is still required per commit.
+      #     home/common/ssh.nix). The touch is still required per commit.
       #   - `-e` opens the prepped message in Helix (core.editor above) for a
       #     final review/edit before the commit is created.
       alias.cc = ''!f() { ssh-add -l >/dev/null 2>&1 || ssh-add ~/.ssh/id_ecdsa_sk_rk; git commit -e -F "$(git rev-parse --git-dir)/CLAUDE_COMMIT_MSG"; }; f'';
@@ -92,8 +92,9 @@
   # Teach Claude Code the `git cc` workflow globally. Files in ~/.claude/rules/
   # are a native Claude Code feature: every *.md there is auto-loaded as a
   # user-level rule at session start and applies to every project on the
-  # machine, no per-project setup. Declarative + shared across hosts, so a fresh
-  # laptop build picks it up too. (Read-only nix symlink, so it can't be edited
+  # machine, no per-project setup. Declarative + shared across hosts (it's in
+  # home/common/), so every NixOS and macOS host picks it up. (Read-only nix
+  # symlink, so it can't be edited
   # in-app — change it here and rebuild.) Pairs with alias.cc above.
   home.file.".claude/rules/git-cc.md".text = ''
     # Git commit workflow (YubiKey-signed)
@@ -107,7 +108,7 @@
        commit is signed by my YubiKey (FIDO2 SSH key), which needs an
        interactive touch a sandboxed shell can't provide.
 
-    `git cc` and this rule are configured together in home/dev.nix.
+    `git cc` and this rule are configured together in home/common/dev.nix.
   '';
 
   home.packages = with pkgs; [

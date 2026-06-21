@@ -1,4 +1,4 @@
-{ ... }: {
+{ pkgs, ... }: {
   # SSH client — enough that `git push` over SSH "just works" once the YubiKey's
   # resident key has been exported to ~/.ssh (a one-time `ssh-keygen -K`, since a
   # physical touch can't be declared). programs.ssh also creates ~/.ssh itself.
@@ -24,12 +24,16 @@
   # ssh-agent, so the YubiKey is "unlocked" (PIN entered) once per session instead
   # of on every commit/push. Runs as a systemd user service and exports
   # SSH_AUTH_SOCK into the session ($XDG_RUNTIME_DIR/ssh-agent). The key is loaded
-  # on demand: `git cc` (home/dev.nix) runs `ssh-add` if the agent is empty, and
+  # on demand: `git cc` (home/common/dev.nix) runs `ssh-add` if the agent is empty, and
   # github.com pushes add it via AddKeysToAgent above.
   #
   # NOTE: this caches the FIDO2 *PIN* only. The physical *touch* is user-presence
   # enforced by the YubiKey itself and is required per-signature — it cannot be
   # cached. (Dropping it would mean regenerating the key with `no-touch-required`,
   # which weakens it and needs re-registering on GitHub.)
-  services.ssh-agent.enable = true;
+  #
+  # Linux-only: home-manager's services.ssh-agent is a systemd user service.
+  # macOS already runs its own launchd ssh-agent, and AddKeysToAgent above wires
+  # the key into it — so we don't (and can't) start this unit on Darwin.
+  services.ssh-agent.enable = pkgs.stdenv.hostPlatform.isLinux;
 }

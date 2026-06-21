@@ -1,7 +1,7 @@
 { ... }: {
   # fastfetch — system info / specs banner. The home-manager module installs the
   # package and writes ~/.config/fastfetch/config.jsonc from `settings`. It's run
-  # on interactive shell start by home/apps/fish.nix.
+  # on interactive shell start by home/common/fish.nix.
   programs.fastfetch = {
     enable = true;
 

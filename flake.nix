@@ -27,6 +27,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # macOS host management (luna-macbook-intel). Pinned to the same nixpkgs as
+    # everything else so one lock drives all hosts.
+    nix-darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       # no inputs.nixpkgs.follows — the binary cache requires this be absent
@@ -38,35 +44,36 @@
     system = "x86_64-linux";
     lib    = nixpkgs.lib;
   in {
-    nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+    # The live AMD Ryzen 7 7700X + RTX 2080 desktop.
+    nixosConfigurations.zenith-pc-ryzen-7 = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
       modules = [
-        ./hosts/desktop/configuration.nix
+        ./hosts/zenith-pc-ryzen-7/configuration.nix
         home-manager.nixosModules.home-manager
       ];
     };
 
-    # STUB host for a future laptop — see hosts/laptop/. Evaluates today but is
-    # not yet deployed to real hardware.
-    nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
-      inherit system;
+    # macOS host, managed by nix-darwin. `system` is taken from the host's
+    # nixpkgs.hostPlatform (x86_64-darwin), so it isn't passed here. Apply with
+    # `darwin-rebuild switch --flake .#luna-macbook-intel` on the Mac.
+    darwinConfigurations.luna-macbook-intel = inputs.nix-darwin.lib.darwinSystem {
       specialArgs = { inherit inputs; };
       modules = [
-        ./hosts/laptop/configuration.nix
-        home-manager.nixosModules.home-manager
+        ./hosts/luna-macbook-intel/configuration.nix
+        home-manager.darwinModules.home-manager
       ];
     };
 
     # Bootable live ISO for VM testing:
     #   nix build .#iso --accept-flake-config
     #   sudo dd if=result/iso/noctix-os.iso of=/dev/sdX bs=4M status=progress oflag=sync
-    nixosConfigurations.desktop-iso = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.zenith-pc-ryzen-7-iso = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit inputs; };
       modules = [
         "${nixpkgs}/nixos/modules/installer/cd-dvd/iso-image.nix"
-        ./hosts/desktop/configuration.nix
+        ./hosts/zenith-pc-ryzen-7/configuration.nix
         home-manager.nixosModules.home-manager
 
         ({ ... }: {
@@ -98,10 +105,10 @@
 
     packages.${system} = let
       pkgs   = nixpkgs.legacyPackages.${system};
-      rawIso = self.nixosConfigurations.desktop-iso.config.system.build.isoImage;
+      rawIso = self.nixosConfigurations.zenith-pc-ryzen-7-iso.config.system.build.isoImage;
     in {
-      # Test in QEMU: nix build .#vm && QEMU_OPTS="-m 4096 -smp 4" ./result/bin/run-desktop-vm
-      vm  = self.nixosConfigurations.desktop.config.system.build.vm;
+      # Test in QEMU: nix build .#vm && QEMU_OPTS="-m 4096 -smp 4" ./result/bin/run-zenith-pc-ryzen-7-vm
+      vm  = self.nixosConfigurations.zenith-pc-ryzen-7.config.system.build.vm;
       # Wrap the ISO so result/iso/noctix-os.iso is the visible filename.
       # nixpkgs computes the ISO filename internally; image.fileName has no effect.
       iso = pkgs.runCommand "noctix-os-iso" {} ''

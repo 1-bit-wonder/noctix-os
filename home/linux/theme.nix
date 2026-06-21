@@ -1,7 +1,8 @@
 { config, pkgs, ... }: {
   # Desktop appearance — GTK, Qt and cursor theming kept together since they're
   # interrelated (the cursor below syncs with the GTK cursorTheme, and qt sets the
-  # platform theme). App *configs* live in home/apps.nix; this file is purely look.
+  # platform theme). App *configs* live in home/common/ and home/linux/; this
+  # file is purely look.
 
   # GTK theming — Adwaita dark keeps everything consistent with GNOME apps
   gtk = {

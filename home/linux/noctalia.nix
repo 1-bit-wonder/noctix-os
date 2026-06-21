@@ -39,7 +39,8 @@ in {
         #   kitty -> ~/.config/kitty/themes/noctalia.conf (globincluded by kitty.conf;
         #            its post_hook live-reloads running terminals to match light/dark)
         #   helix -> ~/.config/helix/themes/noctalia.toml (selected via theme="noctalia"
-        #            in home/apps.nix; no post_hook, so running Helix picks it up on the
+        #            set via theme="noctalia" in home/linux/default.nix; no post_hook, so running
+        #            Helix picks it up on the
         #            next launch or :config-reload)
         templates = {
           enable_builtin_templates = true;
@@ -58,11 +59,11 @@ in {
 
   # Single flat wallpaper dir. The other images stay available in the
   # switcher, but noctix_logo_dark is the fixed default.
-  home.file."Pictures/Wallpapers/lone_tree_day.webp".source   = ../assets/lone_tree_day.webp;
-  home.file."Pictures/Wallpapers/lone_tree_night.webp".source = ../assets/lone_tree_night.webp;
-  home.file."Pictures/Wallpapers/waves_violet.webp".source    = ../assets/waves_violet.webp;
-  home.file."Pictures/Wallpapers/smoke_teal.webp".source      = ../assets/smoke_teal.webp;
-  home.file."Pictures/Wallpapers/marble_blue.webp".source     = ../assets/marble_blue.webp;
-  home.file."Pictures/Wallpapers/noctix_logo_dark.webp".source  = ../assets/noctix_logo_dark.webp;
-  home.file."Pictures/Wallpapers/noctix_logo_light.webp".source = ../assets/noctix_logo_light.webp;
+  home.file."Pictures/Wallpapers/lone_tree_day.webp".source   = ../../assets/lone_tree_day.webp;
+  home.file."Pictures/Wallpapers/lone_tree_night.webp".source = ../../assets/lone_tree_night.webp;
+  home.file."Pictures/Wallpapers/waves_violet.webp".source    = ../../assets/waves_violet.webp;
+  home.file."Pictures/Wallpapers/smoke_teal.webp".source      = ../../assets/smoke_teal.webp;
+  home.file."Pictures/Wallpapers/marble_blue.webp".source     = ../../assets/marble_blue.webp;
+  home.file."Pictures/Wallpapers/noctix_logo_dark.webp".source  = ../../assets/noctix_logo_dark.webp;
+  home.file."Pictures/Wallpapers/noctix_logo_light.webp".source = ../../assets/noctix_logo_light.webp;
 }

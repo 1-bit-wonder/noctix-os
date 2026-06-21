@@ -97,7 +97,7 @@
         # 195). Left as a template — uncomment after confirming the name above,
         # then map directions to keybinds you actually use. KEY_* names come from
         # <linux/input-event-codes.h>. These examples drive the Hyprland focus
-        # binds already in home/hyprland.nix (Super+H/J/K/L).
+        # binds already in home/linux/hyprland.nix (Super+H/J/K/L).
         #
         # buttons = [
         #   {
