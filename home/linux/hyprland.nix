@@ -182,6 +182,12 @@ in {
       hl.bind(mod .. " + A", hl.dsp.exec_cmd("noctalia msg panel-toggle control-center"))
       hl.bind(mod .. " + X", hl.dsp.exec_cmd("noctalia msg panel-toggle session"))
 
+      -- Night light (hyprsunset over IPC — uses Hyprland's CTM, which works on
+      -- this NVIDIA GPU; Noctalia's own gamma toggle does not. See nightlight.nix.)
+      hl.bind(mod .. " + SHIFT + N",            hl.dsp.exec_cmd("nightlightctl toggle"))
+      hl.bind(mod .. " + SHIFT + bracketright", hl.dsp.exec_cmd("nightlightctl warmer"))
+      hl.bind(mod .. " + SHIFT + bracketleft",  hl.dsp.exec_cmd("nightlightctl cooler"))
+
       -- Layout switching (the Lua parser rejects `hyprctl keyword`; set it via the API)
       local function set_layout(name)
         return function() hl.config({ general = { layout = name } }) end

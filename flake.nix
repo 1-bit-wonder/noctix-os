@@ -50,6 +50,10 @@
       specialArgs = { inherit inputs; };
       modules = [
         ./hosts/zenith-pc-ryzen-7/configuration.nix
+        # NVIDIA proprietary driver — live host only, NOT the ISO below (a VM
+        # guest has no NVIDIA GPU). Enables CTM so hyprsunset's night light
+        # actually tints the screen; nouveau can't. See modules/nvidia.nix.
+        ./modules/nvidia.nix
         home-manager.nixosModules.home-manager
       ];
     };
