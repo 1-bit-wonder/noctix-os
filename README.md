@@ -4,9 +4,10 @@
 
 # noctix-os
 
-**A reproducible NixOS desktop — Hyprland + [Noctalia v5](https://github.com/noctalia-dev/noctalia), tuned for work.**
+**My personal, fully reproducible cross-platform Nix flake — a Hyprland + [Noctalia v5](https://github.com/noctalia-dev/noctalia) NixOS desktop and a nix-darwin Mac, sharing one declarative toolchain.**
 
 ![NixOS](https://img.shields.io/badge/NixOS-unstable-5277C3?logo=nixos&logoColor=white)
+![nix-darwin](https://img.shields.io/badge/nix--darwin-macOS-000000?logo=apple&logoColor=white)
 ![Wayland](https://img.shields.io/badge/Hyprland-Wayland-89b4fa)
 ![Noctalia](https://img.shields.io/badge/Noctalia-v5-cba6f7)
 ![home-manager](https://img.shields.io/badge/home--manager-managed-a6e3a1)
@@ -19,7 +20,7 @@
 
 ---
 
-A single flake that builds a complete, themed Hyprland desktop: the [Noctalia](https://github.com/noctalia-dev/noctalia) shell (bar, launcher, control center, notifications), a GTK4 login greeter, a full dev toolchain, and YubiKey support — all declarative, all reproducible. Tracks `nixos-unstable`.
+A single flake that builds every machine I use. On NixOS it's a complete, themed Hyprland desktop: the [Noctalia](https://github.com/noctalia-dev/noctalia) shell (bar, launcher, control center, notifications), a GTK4 login greeter, a full dev toolchain, and YubiKey support. On macOS (via nix-darwin) it's the same cross-platform CLI toolchain and dotfiles, minus the Linux-only desktop — all declarative, all reproducible. Tracks `nixos-unstable`.
 
 ## Hosts
 
@@ -66,10 +67,12 @@ host layers on `home/linux/` (the full Hyprland + Noctalia desktop and
 - AMD + NVIDIA graphics enabled (`hardware.graphics`), 32-bit support for games/Steam.
 - Weekly automatic GC, store auto-optimise, Noctalia + Hyprland binary caches.
 
-## Install on the NixOS desktop
+## Bringing up the NixOS desktop
+
+These are my notes for re-provisioning the desktop from scratch (after a reinstall or on a fresh disk). The config is pinned to the hostname `zenith-pc-ryzen-7` and the username `ni`.
 
 ### 1. Install NixOS
-Download the [NixOS graphical installer](https://nixos.org/download), flash it, and run through it. Use `zenith-pc-ryzen-7` as the hostname and `ni` as the username to match this config. The installer writes hardware config to `/etc/nixos/hardware-configuration.nix`.
+Download the [NixOS graphical installer](https://nixos.org/download), flash it, and run through it — setting the hostname to `zenith-pc-ryzen-7` and the username to `ni` so they match this config. The installer writes hardware config to `/etc/nixos/hardware-configuration.nix`.
 
 ### 2. Apply this config on first boot
 ```bash
@@ -77,9 +80,9 @@ sudo nixos-rebuild switch --flake github:1-bit-wonder/noctix-os#zenith-pc-ryzen-
 ```
 - `--accept-flake-config` — trusts the Noctalia and Hyprland binary caches; without it, everything rebuilds from source.
 
-Default password is `nixos` — change it with `passwd ni` after logging in.
+The default password is `nixos` — change it with `passwd ni` after logging in.
 
-> **Reinstalling on different hardware?** The desktop's real `hardware-configuration.nix` is committed to this repo (`hosts/zenith-pc-ryzen-7/`). On a new machine, regenerate it and overwrite the committed copy before deploying:
+> **Reinstalling on different hardware?** The desktop's real `hardware-configuration.nix` is committed to this repo (`hosts/zenith-pc-ryzen-7/`). On new hardware, regenerate it and overwrite the committed copy before deploying:
 > ```bash
 > git clone https://github.com/1-bit-wonder/noctix-os ~/noctix-os
 > cp /etc/nixos/hardware-configuration.nix ~/noctix-os/hosts/zenith-pc-ryzen-7/hardware-configuration.nix
@@ -87,7 +90,7 @@ Default password is `nixos` — change it with `passwd ni` after logging in.
 > ```
 
 ### 3. Post-install setup
-A few things are intentionally **not** baked into this public repo and need a one-time setup:
+A few things are intentionally **not** baked into the repo (it's public) and need a one-time setup per machine:
 
 **Git identity** (kept out of the repo on purpose):
 ```bash
@@ -136,7 +139,9 @@ The Mac runs the same cross-platform toolchain (`home/common/` — fish, starshi
 
 > Only the Intel Mac is wired up today. `home/darwin.nix` already detects the Homebrew prefix by architecture, so adding an Apple Silicon Mac later is just a new `hosts/<name>/` + `darwinConfigurations.<name>` entry — see *Adding another host* below.
 
-### Fresh Mac setup
+### Bringing up a Mac
+
+My notes for provisioning the Mac from scratch:
 
 1. **Install Nix** (the [Determinate Systems installer](https://github.com/DeterminateSystems/nix-installer) is the easiest path to a flakes-enabled daemon):
    ```bash
