@@ -42,9 +42,17 @@ in {
         #            set via theme="noctalia" in home/linux/default.nix; no post_hook, so running
         #            Helix picks it up on the
         #            next launch or :config-reload)
+        #   gtk3/gtk4 -> ~/.config/gtk-{3,4}.0/noctalia.css (the wallpaper-matched
+        #            palette, @import-ed from gtk.css — see the extraCss in theme.nix).
+        #            Their post_hook (the package's gtk/apply.sh) also runs
+        #            `dconf write .../color-scheme 'prefer-<mode>'`, which is the signal
+        #            xdg-desktop-portal exports as org.freedesktop.appearance color-scheme.
+        #            That is what makes apps set to "follow system" (Firefox, GTK4 apps)
+        #            track Noctalia's `mode` above — without it the portal reports
+        #            "no preference" and they fall back to light despite the dark theme.
         templates = {
           enable_builtin_templates = true;
-          builtin_ids              = [ "kitty" "helix" ];
+          builtin_ids              = [ "kitty" "helix" "gtk3" "gtk4" ];
         };
       };
       wallpaper = {

@@ -26,6 +26,16 @@
       theme = config.gtk.theme;
       extraConfig.gtk-application-prefer-dark-theme = true;
     };
+    # Pull in Noctalia's wallpaper-matched palette. Noctalia's gtk3/gtk4 templates
+    # (enabled in noctalia.nix) write ~/.config/gtk-{3,4}.0/noctalia.css on every
+    # palette change; this @import wires it into the gtk.css that home-manager owns.
+    # Letting HM write the import is deliberate: Noctalia's apply.sh would otherwise
+    # delete HM's read-only gtk.css symlink to inject the line itself and then fight
+    # HM on every rebuild. With the import already present, apply.sh detects it and
+    # leaves gtk.css alone — it only (re)writes noctalia.css (which HM doesn't manage)
+    # and pushes the color-scheme preference to the portal.
+    gtk3.extraCss = ''@import url("noctalia.css");'';
+    gtk4.extraCss = ''@import url("noctalia.css");'';
   };
 
   # Qt theming — qtct means qt6ct handles theming (sets QT_QPA_PLATFORMTHEME=qt6ct)
