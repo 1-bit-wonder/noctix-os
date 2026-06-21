@@ -1,4 +1,4 @@
-{ pkgs, lib, config, ... }: let
+{ pkgs, lib, config, inputs, ... }: let
   wallpaperDir     = "/home/ni/Pictures/Wallpapers";
   defaultWallpaper = "${wallpaperDir}/noctix_logo_dark.webp";
 in {
@@ -74,4 +74,13 @@ in {
   home.file."Pictures/Wallpapers/marble_blue.webp".source     = ../../assets/marble_blue.webp;
   home.file."Pictures/Wallpapers/noctix_logo_dark.webp".source  = ../../assets/noctix_logo_dark.webp;
   home.file."Pictures/Wallpapers/noctix_logo_light.webp".source = ../../assets/noctix_logo_light.webp;
+
+  # Self-authored Noctalia v5 plugin: Nixpkgs PR Tracker. Noctalia discovers
+  # plugins by their manifest at
+  # ~/.local/share/noctalia/plugins/<id>/plugin.toml, so we symlink the whole
+  # flake-input source tree (read-only Lua/TOML — runtime state lives separately
+  # under ~/.local/state/noctalia) into that dir. Bump with `nix flake update`.
+  # Still enable it once per machine in Settings → Plugins after first install.
+  home.file.".local/share/noctalia/plugins/nixos-tracker".source =
+    inputs.noctalia-nixos-tracker;
 }

@@ -103,13 +103,30 @@
         "type": "github"
       }
     },
+    "noctalia-nixos-tracker": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782066817,
+        "narHash": "sha256-0mWY0sAn4xdfuyrUNx3Ockn4SGMinRmodLdiqxs1A2A=",
+        "owner": "1-bit-wonder",
+        "repo": "noctalia-nixos-tracker",
+        "rev": "c21724ba64696b22d18183e8120e9967f1c284bb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "1-bit-wonder",
+        "repo": "noctalia-nixos-tracker",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
         "nixpkgs-regreet": "nixpkgs-regreet",
-        "noctalia": "noctalia"
+        "noctalia": "noctalia",
+        "noctalia-nixos-tracker": "noctalia-nixos-tracker"
       }
     }
   },

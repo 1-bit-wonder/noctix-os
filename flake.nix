@@ -47,6 +47,13 @@
       url = "github:noctalia-dev/noctalia";
       # no inputs.nixpkgs.follows — the binary cache requires this be absent
     };
+    # Self-authored Noctalia v5 plugin (Nixpkgs PR Tracker). A plain source tree,
+    # not a flake — `flake = false` gives us the raw files to symlink into
+    # Noctalia's plugins dir from home/linux/noctalia.nix. `nix flake update` bumps it.
+    noctalia-nixos-tracker = {
+      url = "github:1-bit-wonder/noctalia-nixos-tracker";
+      flake = false;
+    };
   };
 
   outputs = { self, nixpkgs, home-manager, noctalia, ... }@inputs:
