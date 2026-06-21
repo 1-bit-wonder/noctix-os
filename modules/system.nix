@@ -159,6 +159,20 @@ in
   # touch-to-sudo / GPG smartcard were intentionally left out.
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
+  # nix-ld — stub dynamic loader at /lib64/ld-linux-x86-64.so.2 so generic
+  # prebuilt glibc binaries run on NixOS. Needed because `mise` (home/common/dev.nix)
+  # downloads upstream Node/Python/etc. runtimes that hard-code that interpreter
+  # path, which stock NixOS lacks. `libraries` are the shared libs those runtimes
+  # commonly dlopen at runtime (libstdc++, zlib, openssl, …).
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      stdenv.cc.cc.lib   # libstdc++ / libgcc_s
+      zlib
+      openssl
+    ];
+  };
+
   # Shells
   programs.fish.enable = true;
 
