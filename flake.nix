@@ -16,12 +16,22 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Pinned solely to source ReGreet 0.3.0. ReGreet 0.4.0 (current unstable)
-    # loads its background through GTK4 GtkMediaFile -> GStreamer GstPlay, whose
-    # GL pipeline fatally aborts on this machine's GPU (greeter never appears).
-    # 0.3.0 renders the background with GdkPixbuf and has no GStreamer dependency.
-    # This is the last nixpkgs rev before the 06-16 bump, which shipped 0.3.0.
-    # Revisit when 0.4.x is fixed; see modules/desktop.nix programs.regreet.package.
+    # Pinned solely to source ReGreet 0.3.0. 0.4.0 renders its background through
+    # a GStreamer/playbin3 path that needs GStreamer plugin deps the nixpkgs
+    # package was missing — so with a wallpaper set the greeter crashes on startup
+    # (SIGABRT in gst_play; on this NVIDIA box a SIGSEGV in libnvidia-glcore) and
+    # greetd restart-loops to a dead console. This is upstream ReGreet issue #165,
+    # FIXED by nixpkgs PR #530302 ("add missing GStreamer deps"), merged
+    # 2026-06-16T07:33Z — ~5h AFTER our nixpkgs lock (567a49d, 06-16T02:33Z), so
+    # our 0.4.0 still lacks the deps (0 gstreamer refs in its closure). 0.3.0 uses
+    # GdkPixbuf, no GStreamer. The fix is on nixpkgs master but NOT yet in the
+    # nixos-unstable channel — as of 2026-06-20 its HEAD is still our locked
+    # 567a49d (the channel lags master by the Hydra cycle), so `nix flake update`
+    # can't pull it yet. FIX PATH: recheck periodically; once an update advances
+    # nixpkgs and regreet's closure gains gstreamer refs, drop this pin + the
+    # package override in modules/desktop.nix and retest on a real COLD boot — a
+    # warm `nixos-rebuild test` + logout passes even when broken (GL already
+    # initialized by the live session), so don't trust it.
     nixpkgs-regreet.url = "github:nixos/nixpkgs/a799d3e3886da994fa307f817a6bc705ae538eeb";
     home-manager = {
       url = "github:nix-community/home-manager";

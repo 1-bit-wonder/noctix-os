@@ -29,8 +29,12 @@ in {
   services.greetd.enable = true;
   programs.regreet = {
     enable = true;
-    # Pinned to 0.3.0 from nixpkgs-regreet — 0.4.0's GStreamer-backed background
-    # crashes the greeter on this GPU. See the nixpkgs-regreet input in flake.nix.
+    # Pinned to 0.3.0 from nixpkgs-regreet — 0.4.0's GStreamer background needs
+    # plugin deps the nixpkgs package lacked (upstream ReGreet issue #165), fixed
+    # by nixpkgs PR #530302 which merged ~5h after our nixpkgs lock, so our 0.4.0
+    # still crashes the greeter to a dead console on cold boot. The fix isn't in
+    # the nixos-unstable channel yet (still at our rev as of 2026-06-20); drop this
+    # pin once it advances past the fix. See nixpkgs-regreet in flake.nix for detail.
     package = inputs.nixpkgs-regreet.legacyPackages.${pkgs.system}.regreet;
     settings = {
       background = {
