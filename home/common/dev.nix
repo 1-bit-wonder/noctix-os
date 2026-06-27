@@ -123,6 +123,11 @@
     tree
     lazygit              # git TUI
 
+    # Web deploy CLIs
+    wrangler             # Cloudflare Workers/Pages deploy + dev
+    cloudflared          # Cloudflare Tunnel daemon
+    netlify-cli          # `netlify` — deploy + dev for Netlify
+
     # Nix tooling (for working on this flake)
     nixd                 # Nix language server
     alejandra            # Nix formatter
